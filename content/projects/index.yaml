@@ -1,0 +1,4 @@
+# Example projects index
+- name: "Personal Website"
+  description: "A Flask-based personal website with blog and portfolio."
+  url: "https://github.com/your-github-username/website"

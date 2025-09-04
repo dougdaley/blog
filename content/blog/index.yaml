@@ -1,4 +1,8 @@
 # Example blog index
-- title: "Welcome to My Blog"
+- title: "Blog"
   filename: "welcome.md"
+  date: "2025-09-04"
+
+- title: "Getting started with D365 FO MCP"
+  filename: "Getting started with D365FO MCP.md"
   date: "2025-09-05"

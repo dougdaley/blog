@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Articles - My Personal Website{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-8 py-16">
+    <header class="text-center mb-16">
+        <h1 class="text-5xl font-sans font-bold text-text-primary mb-4 tracking-tight">Articles</h1>
+        <div class="w-16 h-0.5 bg-border-subtle mx-auto"></div>
+    </header>
+
+    {% if posts %}
+        <div class="space-y-12">
+            {% for post in posts %}
+            <article class="py-8 border-b border-border-subtle last:border-b-0 group hover:pl-4 transition-all duration-300 relative">
+                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-text-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <h2 class="text-3xl font-sans font-semibold text-text-primary mb-4 leading-tight tracking-tight">
+                    <a href="/blog/{{ post.filename.replace('.md', '').lower().replace(' ', '-') }}" class="hover:text-text-muted transition-colors">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                
+                {% if post.excerpt %}
+                    <p class="text-lg text-text-secondary mb-6 leading-relaxed max-w-reading">
+                        {{ post.excerpt }}
+                    </p>
+                {% endif %}
+                
+                {% if post.date %}
+                    <div class="text-sm text-text-light font-sans tracking-wide uppercase">
+                        Published on {{ post.date }}
+                    </div>
+                {% endif %}
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-20 border border-border-subtle rounded-lg bg-cream">
+            <h2 class="text-2xl font-sans font-semibold text-text-secondary mb-4">No Articles Yet</h2>
+            <p class="text-lg text-text-muted max-w-md mx-auto leading-relaxed">
+                Articles will appear here once they're added to your GitHub repository.
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

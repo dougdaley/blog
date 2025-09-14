@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block title %}{{ method.title }} - My Personal Website{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-8 py-16">
+    <!-- Hero Section -->
+    <section class="text-center mb-20 pb-12 border-b border-gray-200">
+        <h1 class="text-6xl lg:text-7xl font-sans font-bold text-gray-900 mb-8 leading-none tracking-tight">
+            {{ method.title }}
+        </h1>
+        {% if method.subtitle %}
+            <p class="text-2xl text-gray-600 italic mb-12 max-w-2xl mx-auto leading-relaxed">
+                {{ method.subtitle }}
+            </p>
+        {% endif %}
+    </section>
+
+    <!-- Introduction -->
+    <div class="mb-16">
+        <p class="text-2xl text-gray-700 mb-16 leading-relaxed">
+            This method provides organizations with a comprehensive framework for designing and implementing target operating models that harness technology to drive sustainable business transformation.
+        </p>
+        
+        <h2 class="text-4xl font-sans font-semibold text-gray-900 mb-12 mt-20 text-center tracking-tight">Introduction</h2>
+        
+        <p class="mb-8 text-xl leading-relaxed text-gray-600">
+            Too many technology transformations fail not because of technical limitations, but because they lack a coherent method for integrating business strategy, organizational design, and technology implementation. This creates a gap between aspiration and execution that undermines even the most well-funded initiatives.
+        </p>
+        
+        <p class="mb-8 text-xl leading-relaxed text-gray-600">
+            The Target Operating Model Method addresses this challenge by providing a systematic approach that begins with strategic intent and works methodically through the layers of organizational change required to achieve sustainable transformation. Built from experience across enterprise transformations, it offers practical guidance for navigating the complexities of modern digital change.
+        </p>
+    </div>
+
+    <!-- The Method -->
+    <div class="mb-16">
+        <h2 class="text-4xl font-sans font-semibold text-gray-900 mb-12 mt-20 text-center tracking-tight">The Method</h2>
+        
+        <!-- Chapter I -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter I</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Foundation & Principles</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                The conceptual foundation that guides all subsequent work, establishing the philosophical and practical principles that distinguish effective transformation approaches.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/01-foundation/why-target-operating-models-matter" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Why Target Operating Models Matter</a>
+                        <div class="text-sm text-gray-600 leading-snug">The strategic case for systematic transformation design</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(8 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/01-foundation/four-principles-technology-enablement" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Four Principles of Technology Enablement</a>
+                        <div class="text-sm text-gray-600 leading-snug">Business-led, human-centered, iterative, and sustainable</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(6 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/01-foundation/beyond-implementation-designing-evolution" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Beyond Implementation: Designing for Evolution</a>
+                        <div class="text-sm text-gray-600 leading-snug">Creating adaptive capabilities rather than fixed solutions</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(7 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter II -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter II</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Strategy & Vision</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                Establishing transformation intent, defining success measures, and aligning technology strategy with business outcomes to create a coherent direction for change.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/02-strategy/defining-transformation-outcomes" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Defining Transformation Outcomes</a>
+                        <div class="text-sm text-gray-600 leading-snug">Moving beyond efficiency gains to strategic capability development</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(9 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/02-strategy/technology-strategy-canvas" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Technology Strategy Canvas</a>
+                        <div class="text-sm text-gray-600 leading-snug">A framework for aligning technology investments with business strategy</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(12 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/02-strategy/success-metrics-drive-behavior" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Success Metrics That Drive Behavior</a>
+                        <div class="text-sm text-gray-600 leading-snug">Designing measurement systems that reinforce transformation goals</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(8 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/02-strategy/building-business-case-change" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Building the Business Case for Change</a>
+                        <div class="text-sm text-gray-600 leading-snug">Articulating value in terms that resonate with stakeholders</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(10 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter III -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter III</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Operating Model Design</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                Designing organizational structures, governance frameworks, and decision-making models that enable technology-driven business functions to operate effectively.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/03-operating-model/anatomy-target-operating-model" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Anatomy of a Target Operating Model</a>
+                        <div class="text-sm text-gray-600 leading-snug">Structure, governance, and decision rights in technology-enabled organizations</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(15 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/03-operating-model/governance-digital-transformation" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Governance for Digital Transformation</a>
+                        <div class="text-sm text-gray-600 leading-snug">Decision-making frameworks that balance agility with control</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(11 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/03-operating-model/designing-cross-functional-collaboration" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Designing for Cross-Functional Collaboration</a>
+                        <div class="text-sm text-gray-600 leading-snug">Breaking down silos through structural and technological integration</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(9 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/03-operating-model/role-centers-excellence" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Role of Centers of Excellence</a>
+                        <div class="text-sm text-gray-600 leading-snug">Building capabilities that scale across business functions</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(8 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter IV -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter IV</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Process Architecture</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                Designing end-to-end processes that maximize the value of technology investments while maintaining the flexibility to evolve with changing business needs.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/04-process-architecture/process-design-technology-integration" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Process Design for Technology Integration</a>
+                        <div class="text-sm text-gray-600 leading-snug">Creating workflows that leverage technology capabilities effectively</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(13 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/04-process-architecture/automation-opportunity-map" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Automation Opportunity Map</a>
+                        <div class="text-sm text-gray-600 leading-snug">Identifying where technology can create the most value</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(10 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/04-process-architecture/integration-patterns-business-processes" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Integration Patterns for Business Processes</a>
+                        <div class="text-sm text-gray-600 leading-snug">Common approaches to connecting systems and workflows</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(12 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter V -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter V</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Technology Integration</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                The technical architecture and integration approaches that support the target operating model, from platform selection to data strategy.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/05-technology-integration/platform-selection-frameworks" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Platform Selection Frameworks</a>
+                        <div class="text-sm text-gray-600 leading-snug">Evaluating technology solutions against business requirements</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(14 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/05-technology-integration/data-architecture-business-transformation" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Data Architecture for Business Transformation</a>
+                        <div class="text-sm text-gray-600 leading-snug">Designing data flows that enable business insights and automation</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(16 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/05-technology-integration/api-first-operating-model" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The API-First Operating Model</a>
+                        <div class="text-sm text-gray-600 leading-snug">Building integration capabilities that support business agility</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(11 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter VI -->
+        <div class="mb-16 pb-12 border-b border-gray-100">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter VI</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">People & Change</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                Change management strategies and capability development approaches that ensure technology transformations achieve their intended business impact.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/06-people-change/change-management-technology-transformation" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Change Management for Technology Transformation</a>
+                        <div class="text-sm text-gray-600 leading-snug">Human-centered approaches to organizational change</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(12 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/06-people-change/building-digital-capabilities" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Building Digital Capabilities</a>
+                        <div class="text-sm text-gray-600 leading-snug">Developing the skills and mindsets required for technology-enabled work</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(9 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/06-people-change/adoption-strategies-stick" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Adoption Strategies That Stick</a>
+                        <div class="text-sm text-gray-600 leading-snug">Moving beyond training to sustainable behavior change</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(8 min)</em>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chapter VII -->
+        <div class="mb-16">
+            <div class="text-sm text-gray-500 font-sans font-medium tracking-wider uppercase mb-2">Chapter VII</div>
+            <h3 class="text-3xl font-sans font-semibold text-gray-900 mb-6 tracking-tight">Performance & Evolution</h3>
+            <p class="text-lg text-gray-600 italic mb-10 leading-relaxed border-b border-gray-100 pb-12">
+                Measurement frameworks and continuous improvement approaches that ensure the target operating model delivers value and adapts to changing requirements.
+            </p>
+            <ul class="space-y-5">
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/07-performance-evolution/designing-performance-management-systems" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Designing Performance Management Systems</a>
+                        <div class="text-sm text-gray-600 leading-snug">Metrics and dashboards that drive continuous improvement</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(11 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/07-performance-evolution/continuous-evolution-model" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">The Continuous Evolution Model</a>
+                        <div class="text-sm text-gray-600 leading-snug">Building capabilities for ongoing adaptation and innovation</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(10 min)</em>
+                </li>
+                <li class="flex items-baseline pb-5 border-b border-gray-50 last:border-b-0 leading-relaxed">
+                    <div class="flex-1 mr-4">
+                        <a href="/tom-method/07-performance-evolution/learning-from-implementation" class="font-medium text-gray-900 hover:text-gray-600 transition-colors block mb-1 no-underline">Learning from Implementation</a>
+                        <div class="text-sm text-gray-600 leading-snug">Capturing and applying insights from transformation experiences</div>
+                    </div>
+                    <em class="text-sm text-gray-600">(7 min)</em>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Guiding Principles Section -->
+        <div class="border-t border-gray-200 pt-20">
+            <h2 class="text-4xl font-sans font-semibold text-gray-900 mb-12 text-center tracking-tight">Guiding Principles</h2>
+            
+            <div class="space-y-12">
+                <div class="flex gap-8 items-start">
+                    <div class="text-4xl font-sans font-light text-gray-300 leading-none flex-shrink-0 w-12">01</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-sans font-semibold text-gray-900 mb-3">Business-Led Transformation</h3>
+                        <p class="text-xl leading-relaxed text-gray-600">Technology serves business strategy, not the other way around. Every technological decision must be grounded in clear business outcomes and strategic intent.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8 items-start">
+                    <div class="text-4xl font-sans font-light text-gray-300 leading-none flex-shrink-0 w-12">02</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-sans font-semibold text-gray-900 mb-3">Human-Centered Design</h3>
+                        <p class="text-xl leading-relaxed text-gray-600">People adopt change, not organizations. Design every aspect of the transformation with the end user experience as the primary consideration.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8 items-start">
+                    <div class="text-4xl font-sans font-light text-gray-300 leading-none flex-shrink-0 w-12">03</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-sans font-semibold text-gray-900 mb-3">Iterative Implementation</h3>
+                        <p class="text-xl leading-relaxed text-gray-600">Build, learn, adapt. Use iterative delivery approaches to reduce risk and incorporate learning throughout the transformation journey.</p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8 items-start">
+                    <div class="text-4xl font-sans font-light text-gray-300 leading-none flex-shrink-0 w-12">04</div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-sans font-semibold text-gray-900 mb-3">Sustainable Evolution</h3>
+                        <p class="text-xl leading-relaxed text-gray-600">Design for ongoing adaptation, not just initial implementation. Create organizational capabilities that can evolve with changing business requirements.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

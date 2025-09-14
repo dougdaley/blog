@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Home - My Personal Website{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Welcome to My Personal Website</h1>
+    <p>I write about technology, productivity, and building great things. Explore my thoughts and projects below.</p>
+    <a href="/blog" class="cta-button">Read My Articles</a>
+</div>
+
+<div class="articles-grid" style="margin-top: 4rem;">
+    <div class="article-card">
+        <h2 class="article-title">Latest Articles</h2>
+        <p class="article-excerpt">Discover insights on technology, productivity, and personal development through my writing.</p>
+        <a href="/blog" class="project-link">View All Articles →</a>
+    </div>
+    
+    <div class="article-card">
+        <h2 class="article-title">My Projects</h2>
+        <p class="article-excerpt">Check out the technology projects I've built and the problems they solve.</p>
+        <a href="/portfolio" class="project-link">View Portfolio →</a>
+    </div>
+</div>
+{% endblock %}

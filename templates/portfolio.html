@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - My Personal Website{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Portfolio</h1>
+
+{% if projects %}
+    <div class="projects-grid">
+        {% for project in projects %}
+        <div class="project-card">
+            <h2 class="project-title">{{ project.name or project.title }}</h2>
+            <p class="project-description">{{ project.description }}</p>
+            <div class="project-links">
+                {% if project.url %}
+                    <a href="{{ project.url }}" class="project-link" target="_blank">View Project</a>
+                {% endif %}
+                {% if project.github %}
+                    <a href="{{ project.github }}" class="project-link" target="_blank">GitHub</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <h2>No Projects Yet</h2>
+        <p>Projects will appear here once they're added to your GitHub repository.</p>
+    </div>
+{% endif %}
+{% endblock %}

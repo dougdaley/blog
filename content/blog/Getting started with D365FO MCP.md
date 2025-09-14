@@ -4,9 +4,6 @@ date: "2025-01-06"
 excerpt: "A comprehensive guide to setting up and using the D365 Finance & Operations Model Context Protocol (MCP) server for AI-powered business insights and automation."
 tags: ["d365", "mcp", "ai", "finance", "operations", "claude"]
 ---
-
-# Getting Started with D365FO MCP Server
-
 The D365 Finance & Operations MCP (Model Context Protocol) Server is a production-ready bridge between AI assistants like Claude and your Microsoft Dynamics 365 Finance & Operations environment. This guide will walk you through everything you need to know to get started.
 
 ## What is the D365FO MCP Server?

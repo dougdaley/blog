@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Target Operating Model Method for Technology Enablement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Charter", "Georgia", "Times New Roman", serif;
+            line-height: 1.7;
+            color: #1a1a1a;
+            background-color: #fefefe;
+            font-size: 18px;
+        }
+
+        /* Header */
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #e8e8e8;
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0 2rem;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .nav a:hover, .nav a.active {
+            color: #1a1a1a;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 5rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: #444;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Introduction */
+        .introduction {
+            margin-bottom: 5rem;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .introduction p {
+            margin-bottom: 2rem;
+        }
+
+        /* Method Structure */
+        .method-structure {
+            margin-bottom: 5rem;
+        }
+
+        .structure-title {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        .chapter {
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .chapter:last-child {
+            border-bottom: none;
+        }
+
+        .chapter-number {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .chapter-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+            letter-spacing: -0.01em;
+        }
+
+        .chapter-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .articles-list {
+            list-style: none;
+        }
+
+        .article-item {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid #f8f8f8;
+        }
+
+        .article-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .article-link {
+            flex: 1;
+            text-decoration: none;
+            color: #1a1a1a;
+            transition: color 0.2s ease;
+            margin-right: 1rem;
+        }
+
+        .article-link:hover {
+            color: #666;
+        }
+
+        .article-title {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+
+        .article-subtitle {
+            font-size: 0.9rem;
+            color: #777;
+            line-height: 1.4;
+        }
+
+        .article-meta {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.8rem;
+            color: #999;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        /* Principles Section */
+        .principles-section {
+            margin-top: 5rem;
+            padding-top: 3rem;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .principles-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        .principle {
+            margin-bottom: 3rem;
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .principle-number {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: #ccc;
+            line-height: 1;
+            flex-shrink: 0;
+            width: 3rem;
+        }
+
+        .principle-content {
+            flex: 1;
+        }
+
+        .principle-title {
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: #1a1a1a;
+            font-size: 1.1rem;
+        }
+
+        .principle-desc {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 3rem 1rem;
+            }
+
+            .hero-title {
+                font-size: 2.4rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .introduction {
+                font-size: 1rem;
+            }
+
+            .chapter-title {
+                font-size: 1.5rem;
+            }
+
+            .article-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .article-meta {
+                align-self: flex-start;
+            }
+
+            .principle {
+                gap: 1rem;
+            }
+
+            .principle-number {
+                font-size: 1.5rem;
+                width: 2rem;
+            }
+
+            .nav {
+                gap: 1.5rem;
+            }
+
+            body {
+                font-size: 16px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus states */
+        a:focus {
+            outline: 2px solid #666;
+            outline-offset: 2px;
+        }
+
+        /* Selection */
+        ::selection {
+            background-color: #f0f0f0;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Articles</a>
+            <a href="#" class="nav-link active">The TOM Method</a>
+            <a href="#" class="nav-link">Portfolio</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <h1 class="hero-title">The Target Operating Model Method for Technology Enablement</h1>
+            <p class="hero-subtitle">A systematic approach to transforming business functions through strategic technology integration</p>
+            <p class="hero-description">
+                This method provides organizations with a comprehensive framework for designing and implementing target operating models that harness technology to drive sustainable business transformation.
+            </p>
+        </section>
+
+        <section class="introduction">
+            <p>Too many technology transformations fail not because of technical limitations, but because they lack a coherent method for integrating business strategy, organizational design, and technology implementation. This creates a gap between aspiration and execution that undermines even the most well-funded initiatives.</p>
+            
+            <p>The Target Operating Model Method addresses this challenge by providing a systematic approach that begins with strategic intent and works methodically through the layers of organizational change required to achieve sustainable transformation. Built from experience across enterprise transformations, it offers practical guidance for navigating the complexities of modern digital change.</p>
+        </section>
+
+        <section class="method-structure">
+            <h2 class="structure-title">The Method</h2>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter I</div>
+                <h3 class="chapter-title">Foundation & Principles</h3>
+                <p class="chapter-description">The conceptual foundation that guides all subsequent work, establishing the philosophical and practical principles that distinguish effective transformation approaches.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Why Target Operating Models Matter</div>
+                            <div class="article-subtitle">The strategic case for systematic transformation design</div>
+                        </a>
+                        <div class="article-meta">8 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Four Principles of Technology Enablement</div>
+                            <div class="article-subtitle">Business-led, human-centered, iterative, and sustainable</div>
+                        </a>
+                        <div class="article-meta">6 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Beyond Implementation: Designing for Evolution</div>
+                            <div class="article-subtitle">Creating adaptive capabilities rather than fixed solutions</div>
+                        </a>
+                        <div class="article-meta">7 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter II</div>
+                <h3 class="chapter-title">Strategy & Vision</h3>
+                <p class="chapter-description">Establishing transformation intent, defining success measures, and aligning technology strategy with business outcomes to create a coherent direction for change.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Defining Transformation Outcomes</div>
+                            <div class="article-subtitle">Moving beyond efficiency gains to strategic capability development</div>
+                        </a>
+                        <div class="article-meta">9 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Technology Strategy Canvas</div>
+                            <div class="article-subtitle">A framework for aligning technology investments with business strategy</div>
+                        </a>
+                        <div class="article-meta">12 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Success Metrics That Drive Behavior</div>
+                            <div class="article-subtitle">Designing measurement systems that reinforce transformation goals</div>
+                        </a>
+                        <div class="article-meta">8 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Building the Business Case for Change</div>
+                            <div class="article-subtitle">Articulating value in terms that resonate with stakeholders</div>
+                        </a>
+                        <div class="article-meta">10 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter III</div>
+                <h3 class="chapter-title">Operating Model Design</h3>
+                <p class="chapter-description">Designing organizational structures, governance frameworks, and decision-making models that enable technology-driven business functions to operate effectively.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Anatomy of a Target Operating Model</div>
+                            <div class="article-subtitle">Structure, governance, and decision rights in technology-enabled organizations</div>
+                        </a>
+                        <div class="article-meta">15 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Governance for Digital Transformation</div>
+                            <div class="article-subtitle">Decision-making frameworks that balance agility with control</div>
+                        </a>
+                        <div class="article-meta">11 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Designing for Cross-Functional Collaboration</div>
+                            <div class="article-subtitle">Breaking down silos through structural and technological integration</div>
+                        </a>
+                        <div class="article-meta">9 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Role of Centers of Excellence</div>
+                            <div class="article-subtitle">Building capabilities that scale across business functions</div>
+                        </a>
+                        <div class="article-meta">8 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter IV</div>
+                <h3 class="chapter-title">Process Architecture</h3>
+                <p class="chapter-description">Designing end-to-end processes that maximize the value of technology investments while maintaining the flexibility to evolve with changing business needs.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Process Design for Technology Integration</div>
+                            <div class="article-subtitle">Creating workflows that leverage technology capabilities effectively</div>
+                        </a>
+                        <div class="article-meta">13 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Automation Opportunity Map</div>
+                            <div class="article-subtitle">Identifying where technology can create the most value</div>
+                        </a>
+                        <div class="article-meta">10 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Integration Patterns for Business Processes</div>
+                            <div class="article-subtitle">Common approaches to connecting systems and workflows</div>
+                        </a>
+                        <div class="article-meta">12 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter V</div>
+                <h3 class="chapter-title">Technology Integration</h3>
+                <p class="chapter-description">The technical architecture and integration approaches that support the target operating model, from platform selection to data strategy.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Platform Selection Frameworks</div>
+                            <div class="article-subtitle">Evaluating technology solutions against business requirements</div>
+                        </a>
+                        <div class="article-meta">14 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Data Architecture for Business Transformation</div>
+                            <div class="article-subtitle">Designing data flows that enable business insights and automation</div>
+                        </a>
+                        <div class="article-meta">16 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The API-First Operating Model</div>
+                            <div class="article-subtitle">Building integration capabilities that support business agility</div>
+                        </a>
+                        <div class="article-meta">11 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter VI</div>
+                <h3 class="chapter-title">People & Change</h3>
+                <p class="chapter-description">Change management strategies and capability development approaches that ensure technology transformations achieve their intended business impact.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Change Management for Technology Transformation</div>
+                            <div class="article-subtitle">Human-centered approaches to organizational change</div>
+                        </a>
+                        <div class="article-meta">12 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Building Digital Capabilities</div>
+                            <div class="article-subtitle">Developing the skills and mindsets required for technology-enabled work</div>
+                        </a>
+                        <div class="article-meta">9 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Adoption Strategies That Stick</div>
+                            <div class="article-subtitle">Moving beyond training to sustainable behavior change</div>
+                        </a>
+                        <div class="article-meta">8 min</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="chapter">
+                <div class="chapter-number">Chapter VII</div>
+                <h3 class="chapter-title">Performance & Evolution</h3>
+                <p class="chapter-description">Measurement frameworks and continuous improvement approaches that ensure the target operating model delivers value and adapts to changing requirements.</p>
+                <ul class="articles-list">
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Designing Performance Management Systems</div>
+                            <div class="article-subtitle">Metrics and dashboards that drive continuous improvement</div>
+                        </a>
+                        <div class="article-meta">11 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">The Continuous Evolution Model</div>
+                            <div class="article-subtitle">Building capabilities for ongoing adaptation and innovation</div>
+                        </a>
+                        <div class="article-meta">10 min</div>
+                    </li>
+                    <li class="article-item">
+                        <a href="#" class="article-link">
+                            <div class="article-title">Learning from Implementation</div>
+                            <div class="article-subtitle">Capturing and applying insights from transformation experiences</div>
+                        </a>
+                        <div class="article-meta">7 min</div>
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+
+        <section class="principles-section">
+            <h2 class="principles-title">Guiding Principles</h2>
+            
+            <div class="principle">
+                <div class="principle-number">01</div>
+                <div class="principle-content">
+                    <div class="principle-title">Business-Led Transformation</div>
+                    <div class="principle-desc">Technology serves business strategy, not the other way around. Every technological decision must be grounded in clear business outcomes and strategic intent.</div>
+                </div>
+            </div>
+            
+            <div class="principle">
+                <div class="principle-number">02</div>
+                <div class="principle-content">
+                    <div class="principle-title">Human-Centered Design</div>
+                    <div class="principle-desc">People adopt change, not organizations. Design every aspect of the transformation with the end user experience as the primary consideration.</div>
+                </div>
+            </div>
+            
+            <div class="principle">
+                <div class="principle-number">03</div>
+                <div class="principle-content">
+                    <div class="principle-title">Iterative Implementation</div>
+                    <div class="principle-desc">Build, learn, adapt. Use iterative delivery approaches to reduce risk and incorporate learning throughout the transformation journey.</div>
+                </div>
+            </div>
+            
+            <div class="principle">
+                <div class="principle-number">04</div>
+                <div class="principle-content">
+                    <div class="principle-title">Sustainable Evolution</div>
+                    <div class="principle-desc">Design for ongoing adaptation, not just initial implementation. Create organizational capabilities that can evolve with changing business requirements.</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

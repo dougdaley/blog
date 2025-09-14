@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Personal Website{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['Charter', 'Georgia', 'Times New Roman', 'serif'],
+                        'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'SF Mono', 'Monaco', 'Cascadia Code', 'monospace']
+                    },
+                    colors: {
+                        'paper': '#ffffff',
+                        'cream': '#fafafa', 
+                        'border-subtle': '#e5e5e5',
+                        'text-primary': '#0f0f0f',
+                        'text-secondary': '#404040',
+                        'text-muted': '#737373',
+                        'text-light': '#a3a3a3',
+                    },
+                    maxWidth: {
+                        'reading': '75ch'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-serif text-lg leading-relaxed text-text-primary bg-paper antialiased">
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border-subtle">
+        <nav class="max-w-4xl mx-auto px-8 py-6">
+            <div class="flex justify-center gap-12">
+                <a href="/" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'home' %}text-text-primary font-medium{% endif %}">Home</a>
+                <a href="/blog" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'blog' %}text-text-primary font-medium{% endif %}">Articles</a>
+                <a href="/tom-method" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'tom_method' or request.endpoint == 'tom_method_article' %}text-text-primary font-medium{% endif %}">The TOM Method</a>
+                <a href="/portfolio" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'portfolio' %}text-text-primary font-medium{% endif %}">Portfolio</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="min-h-screen">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="border-t border-border-subtle py-12 text-center text-text-muted">
+        <div class="max-w-4xl mx-auto px-8">
+            <p>&copy; 2024 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

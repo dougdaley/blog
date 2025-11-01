@@ -1,0 +1,153 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="px-4 py-6 sm:px-0">
+    <div class="border-4 border-dashed border-gray-200 rounded-lg p-8">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Content Management Dashboard</h1>
+            <p class="text-lg text-gray-600 mb-8">
+                Manage your articles and business documentation with the sophisticated EditorJS-powered system.
+            </p>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        Total Articles
+                    </dt>
+                    <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                        <span id="article-count">-</span>
+                    </dd>
+                </div>
+            </div>
+            
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        Published
+                    </dt>
+                    <dd class="mt-1 text-3xl font-semibold text-green-600">
+                        <span id="published-count">-</span>
+                    </dd>
+                </div>
+            </div>
+            
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        Drafts
+                    </dt>
+                    <dd class="mt-1 text-3xl font-semibold text-yellow-600">
+                        <span id="draft-count">-</span>
+                    </dd>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Content Creation</h3>
+                <div class="space-y-3">
+                    <a href="/admin/articles/new" 
+                       class="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-md hover:bg-blue-700 transition-colors">
+                        📝 New Article
+                    </a>
+                    <a href="/admin/business/process/new" 
+                       class="block w-full bg-green-600 text-white text-center py-3 px-4 rounded-md hover:bg-green-700 transition-colors">
+                        📋 New Business Process
+                    </a>
+                    <a href="/admin/business/control/new" 
+                       class="block w-full bg-red-600 text-white text-center py-3 px-4 rounded-md hover:bg-red-700 transition-colors">
+                        🛡️ New Control
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Content Management</h3>
+                <div class="space-y-3">
+                    <a href="/admin/articles" 
+                       class="block w-full bg-gray-600 text-white text-center py-3 px-4 rounded-md hover:bg-gray-700 transition-colors">
+                        📚 Manage Articles
+                    </a>
+                    <a href="/admin/business" 
+                       class="block w-full bg-purple-600 text-white text-center py-3 px-4 rounded-md hover:bg-purple-700 transition-colors">
+                        🏢 Business Documentation
+                    </a>
+                    <a href="/admin/tags" 
+                       class="block w-full bg-indigo-600 text-white text-center py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors">
+                        🏷️ Manage Tags
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="mt-8 bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
+            <div id="recent-activity" class="space-y-3">
+                <div class="text-gray-500 text-center py-4">
+                    Loading recent activity...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load dashboard stats
+    fetch('/api/articles')
+        .then(response => response.json())
+        .then(articles => {
+            const total = articles.length;
+            const published = articles.filter(a => a.status === 'published').length;
+            const drafts = articles.filter(a => a.status === 'draft').length;
+            
+            document.getElementById('article-count').textContent = total;
+            document.getElementById('published-count').textContent = published;
+            document.getElementById('draft-count').textContent = drafts;
+            
+            // Show recent articles
+            const recentContainer = document.getElementById('recent-activity');
+            if (articles.length === 0) {
+                recentContainer.innerHTML = `
+                    <div class="text-gray-500 text-center py-4">
+                        No articles yet. <a href="/admin/articles/new" class="text-blue-600 hover:underline">Create your first article</a>!
+                    </div>
+                `;
+            } else {
+                const recent = articles
+                    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+                    .slice(0, 5);
+                
+                recentContainer.innerHTML = recent.map(article => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                        <div>
+                            <h4 class="font-medium text-gray-900">${article.title || 'Untitled'}</h4>
+                            <p class="text-sm text-gray-500">
+                                ${article.status} • Updated ${new Date(article.updated_at).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <a href="/admin/articles/${article.id}" 
+                           class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Edit
+                        </a>
+                    </div>
+                `).join('');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading dashboard data:', error);
+            showNotification('Failed to load dashboard data', 'error');
+        });
+});
+</script>
+{% endblock %}

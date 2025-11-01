@@ -1,0 +1,318 @@
+{
+  "time": 1761993600000,
+  "blocks": [
+    {
+      "type": "header",
+      "data": {
+        "text": "Chapter I — Foundation & Principles",
+        "level": 1
+      }
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "Section 1. Why Target Operating Models Matter",
+        "level": 2
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "<em>The conceptual foundation that guides all subsequent work, establishing the philosophical and practical principles that distinguish effective transformation approaches.</em>"
+      }
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "The Missing Architecture of Transformation",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Most technology transformations begin with urgency and investment — a new ERP, a digital-first mandate, a data platform promising insight at scale. Yet months later, leaders find themselves trapped in the same pattern: technology has been delivered, but the business has not fundamentally changed. Processes are still fragmented, accountability unclear, decisions slow."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The root cause isn’t the technology itself. It’s the absence of a deliberate <b>operating model</b> — the blueprint that defines how the business will actually work once technology is in place. Without this design layer, transformation becomes a collection of disconnected projects, each solving a local problem but rarely altering the enterprise system that produced those problems in the first place."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "An operating model is to business transformation what architecture is to construction: it translates abstract intent into tangible form. Strategy sets direction; the operating model defines how that direction is operationalised through people, process, data, and technology."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "From Strategy to Execution: The Missing Middle",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Executives often talk about “bridging the gap” between strategy and execution. That gap exists because organizations try to leap straight from strategic ambition to project delivery. In the middle lies a critical layer of design — the <b>Target Operating Model (TOM)</b> — that interprets strategic objectives into operational reality."
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "unordered",
+        "items": [
+          "<b>Strategies drift</b> because delivery teams interpret objectives differently.",
+          "<b>Investments fragment</b> as functions optimise locally rather than systemically.",
+          "<b>Change fatigue</b> grows because employees experience constant disruption without clear purpose."
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The TOM method fills this middle ground. It provides a structured way to translate “what we want to become” into “how we will operate.” It connects vision to everyday behaviour through explicit design choices — structure, governance, process, data, and technology."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "The Strategic Case for Target Operating Models",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "A Target Operating Model matters because it creates <b>strategic coherence</b>."
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "ordered",
+        "items": [
+          "<b>How will value be created and delivered?</b>",
+          "<b>What capabilities are required to do so?</b>",
+          "<b>How must the organization be structured, governed, and enabled by technology to sustain it?</b>"
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "When those questions remain implicit, technology becomes the proxy for strategy. Systems are selected for features rather than strategic fit; teams are reorganised around the software instead of business outcomes."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "A TOM reframes the conversation. It forces clarity on <em>what the business needs to achieve</em> before defining <em>how technology will help achieve it.</em> It becomes the north star for all downstream design: process simplification, platform selection, data architecture, and capability development."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "Operating Models as a System of Alignment",
+        "level": 3
+      }
+    },
+    {
+      "type": "table",
+      "data": {
+        "content": [
+          ["Dimension", "Purpose", "Example Design Question"],
+          ["<b>Purpose & Strategy</b>", "Anchor all design choices in the organisation’s strategic intent", "What strategic capabilities differentiate us?"],
+          ["<b>Structure & Governance</b>", "Define decision rights and accountability", "Who owns end-to-end outcomes across silos?"],
+          ["<b>Process & Value Flows</b>", "Design for flow rather than function", "How does work move from customer need to value delivery?"],
+          ["<b>Data & Technology</b>", "Build the digital backbone", "What data and systems enable those flows?"],
+          ["<b>People & Culture</b>", "Shape mindsets and skills", "What capabilities and behaviours sustain new ways of working?"],
+          ["", "", ""]
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Each dimension influences the others. Redesigning processes without redefining governance leads to friction; implementing technology without clear data ownership undermines insight. A well-crafted TOM aligns these dimensions into a single, coherent system."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "From Projects to Systems Thinking",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Traditional transformation programmes treat each change initiative as a discrete project: a new procurement module, a reporting dashboard, a customer portal. The TOM perspective reframes each as a component within an integrated operating system."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Instead of asking, <em>“What can this technology do?”</em> the question becomes, <em>“How does this component enable our target way of operating?”</em>"
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "ordered",
+        "items": [
+          "<b>Clarity:</b> Everyone understands the design logic — why each investment exists and how success will be measured.",
+          "<b>Consistency:</b> Decisions across functions adhere to shared design principles, reducing rework and integration cost.",
+          "<b>Control:</b> Governance becomes proactive — steering toward an intentional future rather than reacting to fragmented change."
+        ]
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "The Dynamic Nature of the Target Operating Model",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "A common misconception is that a TOM is a static end-state — a box-and-arrow diagram filed away after a transformation programme. In practice, it should be treated as a <b>living system</b>, continually evolving as business context shifts."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Markets change, technology evolves, and new capabilities emerge. A well-designed TOM provides both <b>stability</b> (through enduring design principles) and <b>adaptability</b> (through modular components that can evolve independently)."
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "unordered",
+        "items": [
+          "<b>Modularity:</b> Build processes and technology so components can change without disrupting the whole.",
+          "<b>Feedback:</b> Create measurement loops that inform when the operating model needs to adjust.",
+          "<b>Learning:</b> Treat each change as an experiment that improves the system’s overall fitness."
+        ]
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "Illustrative Contrast",
+        "level": 3
+      }
+    },
+    {
+      "type": "table",
+      "data": {
+        "content": [
+          ["Failing Transformation", "Successful Transformation"],
+          ["Technology-led (“Let’s implement the new ERP”)", "Business-led (“Let’s redefine how finance creates value, then enable it with ERP”)"],
+          ["Fragmented governance", "Integrated decision rights"],
+          ["Static processes", "Adaptive, continuously improved workflows"],
+          ["Isolated data ownership", "Enterprise data architecture"],
+          ["Short-term project mindset", "Long-term capability development"],
+          ["", ""]
+        ]
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The difference isn’t technical sophistication — it’s operating model clarity."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "A Working Definition",
+        "level": 3
+      }
+    },
+    {
+      "type": "quote",
+      "data": {
+        "text": "<b>Target Operating Model (TOM):</b> A Target Operating Model is a structured representation of how an organisation intends to deliver its strategic objectives through aligned design of processes, governance, people, data, and technology. It translates strategic intent into executable reality and evolves as the business learns."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "This definition anchors the rest of the book. Every subsequent chapter deepens one aspect of that model — from strategy alignment to process architecture, technology integration, and people enablement."
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "Reflection Questions",
+        "level": 3
+      }
+    },
+    {
+      "type": "list",
+      "data": {
+        "style": "ordered",
+        "items": [
+          "Have we explicitly defined how our strategy translates into ways of working?",
+          "Does our transformation programme have an operating model design, or just a list of projects?",
+          "Who owns the coherence between business, process, and technology design?",
+          "Is our operating model documented — and more importantly, is it lived?"
+        ]
+      }
+    },
+    {
+      "type": "delimiter",
+      "data": {}
+    },
+    {
+      "type": "header",
+      "data": {
+        "text": "Transition",
+        "level": 3
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "A Target Operating Model provides the <em>what</em> of transformation. The next section introduces the <em>how</em> — the <b>four principles</b> that govern effective technology enablement. They form the philosophical compass ensuring every design choice remains business-led, human-centred, iterative, and sustainable."
+      }
+    }
+  ],
+  "version": "2.28.2"
+}

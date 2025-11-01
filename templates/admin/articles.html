@@ -1,0 +1,365 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Articles{% endblock %}
+
+{% block content %}
+<div class="admin-shell space-y-12">
+    <header class="space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+            <div class="space-y-3">
+                <span class="floating-badge">Article Library</span>
+                <h1 class="page-title-input text-4xl">Editorial Catalogue</h1>
+                <p class="page-subtitle-input text-base text-text-muted">Curate, revisit, and polish every story in one elegant space.</p>
+            </div>
+            <a href="/admin/articles/new"
+               class="inline-flex items-center gap-3 rounded-full border border-text-primary/20 bg-white px-6 py-3 font-sans text-xs uppercase tracking-[0.3em] text-text-secondary hover:text-text-primary transition-colors">
+                <span class="text-lg">＋</span> New Article
+            </a>
+        </div>
+    </header>
+
+    <section class="admin-panel-soft px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <div class="relative flex-1">
+                <input
+                    type="text"
+                    id="search-articles"
+                    placeholder="Search by headline, author, or excerpt…"
+                    class="w-full rounded-full border border-border-subtle bg-white/70 px-6 py-3 font-sans text-sm tracking-wide text-text-secondary focus:outline-none focus:border-text-primary/40 focus:ring-0">
+            </div>
+            <div class="flex gap-4">
+                <select id="filter-status"
+                        class="rounded-full border border-border-subtle bg-white/70 px-5 py-3 font-sans text-xs uppercase tracking-[0.26em] text-text-secondary focus:outline-none focus:border-text-primary/40 focus:ring-0">
+                    <option value="">All Status</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="archived">Archived</option>
+                </select>
+                <select id="filter-content-type"
+                        class="rounded-full border border-border-subtle bg-white/70 px-5 py-3 font-sans text-xs uppercase tracking-[0.26em] text-text-secondary focus:outline-none focus:border-text-primary/40 focus:ring-0">
+                    <option value="">All Types</option>
+                    <option value="editorjs">EditorJS</option>
+                    <option value="markdown">Markdown</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <section class="notion-surface overflow-hidden">
+        <div id="articles-container" class="divide-y divide-border-subtle">
+            <div class="px-10 py-16 text-center text-text-muted font-sans tracking-[0.24em] uppercase">
+                Loading articles…
+            </div>
+        </div>
+    </section>
+
+    <section id="bulk-actions" class="hidden admin-panel-soft px-6 py-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <span id="selected-count" class="font-sans text-xs uppercase tracking-[0.28em] text-text-muted">0 articles selected</span>
+            <div class="flex gap-3">
+                <button id="bulk-publish" class="rounded-full border border-text-primary/20 bg-white px-4 py-2 font-sans text-xs uppercase tracking-[0.28em] text-text-secondary hover:text-text-primary transition-colors">
+                    Publish Selected
+                </button>
+                <button id="bulk-unpublish" class="rounded-full border border-border-subtle bg-white px-4 py-2 font-sans text-xs uppercase tracking-[0.28em] text-text-secondary hover:text-text-primary transition-colors">
+                    Unpublish Selected
+                </button>
+                <button id="bulk-delete" class="rounded-full border border-red-200 bg-red-500/10 px-4 py-2 font-sans text-xs uppercase tracking-[0.28em] text-red-500 hover:bg-red-500/20 transition-colors">
+                    Delete Selected
+                </button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 bg-text-primary/50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen px-6">
+        <div class="admin-panel max-w-md w-full p-8 space-y-6">
+            <h3 class="font-sans text-lg tracking-[0.24em] uppercase text-text-primary">Delete Articles?</h3>
+            <p class="text-text-secondary leading-relaxed" id="delete-message">This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button id="confirm-delete" class="flex-1 rounded-full border border-red-300 bg-red-500 text-white py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-red-600 transition-colors">
+                    Delete
+                </button>
+                <button id="cancel-delete" class="flex-1 rounded-full border border-border-subtle bg-white py-3 font-sans text-xs tracking-[0.3em] uppercase text-text-secondary hover:bg-cream transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+class ArticlesManager {
+    constructor() {
+        this.articles = [];
+        this.filteredArticles = [];
+        this.selectedArticles = new Set();
+        
+        this.init();
+    }
+    
+    async init() {
+        await this.loadArticles();
+        this.setupEventListeners();
+        this.renderArticles();
+    }
+    
+    async loadArticles() {
+        try {
+            const response = await fetch('/api/articles');
+            this.articles = await response.json();
+            this.filteredArticles = [...this.articles];
+            
+            // Sort by updated date
+            this.filteredArticles.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            
+        } catch (error) {
+            console.error('Error loading articles:', error);
+            showNotification('Failed to load articles', 'error');
+        }
+    }
+    
+    setupEventListeners() {
+        // Search functionality
+        document.getElementById('search-articles').addEventListener('input', (e) => {
+            this.filterArticles();
+        });
+        
+        // Status filter
+        document.getElementById('filter-status').addEventListener('change', (e) => {
+            this.filterArticles();
+        });
+        
+        // Content type filter
+        document.getElementById('filter-content-type').addEventListener('change', (e) => {
+            this.filterArticles();
+        });
+        
+        // Bulk actions
+        document.getElementById('bulk-publish').addEventListener('click', () => {
+            this.bulkUpdateStatus('published');
+        });
+        
+        document.getElementById('bulk-unpublish').addEventListener('click', () => {
+            this.bulkUpdateStatus('draft');
+        });
+        
+        document.getElementById('bulk-delete').addEventListener('click', () => {
+            this.showDeleteModal();
+        });
+        
+        // Delete modal
+        document.getElementById('cancel-delete').addEventListener('click', () => {
+            document.getElementById('delete-modal').classList.add('hidden');
+        });
+        
+        document.getElementById('confirm-delete').addEventListener('click', () => {
+            this.confirmDelete();
+        });
+    }
+    
+    filterArticles() {
+        const searchTerm = document.getElementById('search-articles').value.toLowerCase();
+        const statusFilter = document.getElementById('filter-status').value;
+        const typeFilter = document.getElementById('filter-content-type').value;
+        
+        this.filteredArticles = this.articles.filter(article => {
+            const matchesSearch = !searchTerm || 
+                article.title.toLowerCase().includes(searchTerm) ||
+                (article.excerpt && article.excerpt.toLowerCase().includes(searchTerm)) ||
+                (article.author && article.author.toLowerCase().includes(searchTerm));
+            
+            const matchesStatus = !statusFilter || article.status === statusFilter;
+            const matchesType = !typeFilter || article.content_type === typeFilter;
+            
+            return matchesSearch && matchesStatus && matchesType;
+        });
+        
+        this.renderArticles();
+    }
+    
+    renderArticles() {
+        const container = document.getElementById('articles-container');
+        
+        if (this.filteredArticles.length === 0) {
+            container.innerHTML = `
+                <div class="px-10 py-16 text-center">
+                    <p class="font-sans text-xs uppercase tracking-[0.28em] text-text-light mb-4">No articles found</p>
+                    <p class="text-text-secondary leading-relaxed">
+                        Begin your first story and watch it bloom. 
+                        <a href="/admin/articles/new" class="underline decoration-text-muted hover:text-text-primary transition-colors">Create a new article →</a>
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = this.filteredArticles.map(article => `
+            <div class="article-item px-10 py-8" data-id="${article.id}">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
+                    <input type="checkbox" class="article-checkbox accent-text-primary mt-1 lg:mt-2 lg:mr-4" data-id="${article.id}">
+                    <div class="flex-1 space-y-4 min-w-0">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div class="space-y-2 min-w-0">
+                                <a href="/admin/articles/${article.id}" class="font-sans text-2xl font-semibold text-text-primary leading-snug tracking-tight hover:text-text-muted transition-colors">
+                                    ${article.title || 'Untitled'}
+                                </a>
+                                ${article.subtitle ? `<p class="text-text-secondary leading-relaxed">${article.subtitle}</p>` : ''}
+                            </div>
+                            <div class="flex flex-wrap gap-3 text-xs font-sans uppercase tracking-[0.26em] text-text-muted">
+                                <span class="status-badge ${this.getStatusColor(article.status)}">${article.status || 'draft'}</span>
+                                <span class="rounded-full border border-border-subtle px-3 py-1">${article.content_type || 'markdown'}</span>
+                                ${article.status === 'published' ? `<a href="/blog/${article.slug}" target="_blank" class="rounded-full border border-border-subtle px-3 py-1 text-text-secondary hover:text-text-primary transition-colors">View ↗</a>` : ''}
+                                <a href="/admin/articles/${article.id}" class="rounded-full border border-border-subtle px-3 py-1 text-text-secondary hover:text-text-primary transition-colors">Edit</a>
+                                <button class="delete-article rounded-full border border-red-200 px-3 py-1 text-red-500 hover:bg-red-500/10 transition-colors" data-id="${article.id}">Delete</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-6 text-sm text-text-light font-sans tracking-wide uppercase">
+                            <span>By ${article.author || 'Unknown'}</span>
+                            <span>${article.updated_at ? new Date(article.updated_at).toLocaleDateString() : ''}</span>
+                            ${article.reading_time ? `<span>${article.reading_time}</span>` : ''}
+                        </div>
+                        ${article.excerpt ? `<p class="text-text-secondary leading-relaxed">${article.excerpt}</p>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        // Attach event listeners for dynamic content
+        this.attachDynamicEventListeners();
+    }
+    
+    attachDynamicEventListeners() {
+        // Checkbox selection
+        document.querySelectorAll('.article-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const articleId = parseInt(e.target.dataset.id);
+                if (e.target.checked) {
+                    this.selectedArticles.add(articleId);
+                } else {
+                    this.selectedArticles.delete(articleId);
+                }
+                this.updateBulkActions();
+            });
+        });
+        
+        // Delete buttons
+        document.querySelectorAll('.delete-article').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const articleId = parseInt(e.target.dataset.id);
+                this.selectedArticles.clear();
+                this.selectedArticles.add(articleId);
+                this.showDeleteModal();
+            });
+        });
+    }
+    
+    updateBulkActions() {
+        const bulkActions = document.getElementById('bulk-actions');
+        const selectedCount = document.getElementById('selected-count');
+        
+        if (this.selectedArticles.size > 0) {
+            bulkActions.classList.remove('hidden');
+            selectedCount.textContent = `${this.selectedArticles.size} article${this.selectedArticles.size === 1 ? '' : 's'} selected`;
+        } else {
+            bulkActions.classList.add('hidden');
+        }
+    }
+    
+    getStatusColor(status) {
+        const colors = {
+            published: 'border border-green-300 bg-green-500/15 text-green-700',
+            draft: 'border border-yellow-300 bg-yellow-400/15 text-yellow-700',
+            archived: 'border border-text-light/30 bg-text-light/10 text-text-muted'
+        };
+        return colors[status] || colors.draft;
+    }
+    
+    showDeleteModal() {
+        const count = this.selectedArticles.size;
+        const message = document.getElementById('delete-message');
+        
+        if (count === 1) {
+            const article = this.articles.find(a => a.id === [...this.selectedArticles][0]);
+            message.textContent = `Are you sure you want to delete "${article.title}"? This action cannot be undone.`;
+        } else {
+            message.textContent = `Are you sure you want to delete ${count} articles? This action cannot be undone.`;
+        }
+        
+        document.getElementById('delete-modal').classList.remove('hidden');
+    }
+    
+    async confirmDelete() {
+        const articleIds = [...this.selectedArticles];
+        
+        try {
+            await Promise.all(articleIds.map(id => 
+                fetch(`/api/articles/${id}`, { method: 'DELETE' })
+            ));
+            
+            showNotification(`${articleIds.length} article${articleIds.length === 1 ? '' : 's'} deleted`, 'success');
+            
+            // Reload articles
+            await this.loadArticles();
+            this.selectedArticles.clear();
+            this.filterArticles();
+            this.updateBulkActions();
+            
+        } catch (error) {
+            console.error('Error deleting articles:', error);
+            showNotification('Failed to delete articles', 'error');
+        }
+        
+        document.getElementById('delete-modal').classList.add('hidden');
+    }
+    
+    async bulkUpdateStatus(newStatus) {
+        const articleIds = [...this.selectedArticles];
+        
+        try {
+            await Promise.all(articleIds.map(id => 
+                fetch(`/api/articles/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                })
+            ));
+            
+            const statusText = newStatus === 'published' ? 'published' : 'unpublished';
+            showNotification(`${articleIds.length} article${articleIds.length === 1 ? '' : 's'} ${statusText}`, 'success');
+            
+            // Reload articles
+            await this.loadArticles();
+            this.selectedArticles.clear();
+            this.filterArticles();
+            this.updateBulkActions();
+            
+        } catch (error) {
+            console.error('Error updating articles:', error);
+            showNotification('Failed to update articles', 'error');
+        }
+    }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new ArticlesManager();
+});
+</script>
+
+<style>
+.status-badge {
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
+{% endblock %}

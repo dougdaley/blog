@@ -1,0 +1,182 @@
+.article-shell {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.article-shell > nav {
+    width: 100%;
+    max-width: 750px;   /* align breadcrumb/header width to article */
+    margin: 0 auto 4rem;
+}
+
+.article-prose {
+    max-width: 750px; /* fixed reading width per request */
+    margin: 0 auto;   /* always centered */
+}
+
+.article-prose > *:first-child {
+    margin-top: 0;
+}
+
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+}
+
+.article-prose h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+}
+
+.article-prose h2 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    margin-top: 3rem;
+    margin-bottom: 1.75rem;
+}
+
+.article-prose h3 {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.article-prose h4 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.article-prose p {
+    font-family: 'Charter', 'Georgia', 'Times New Roman', serif;
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: var(--text-primary);
+    margin-bottom: 1.8rem;
+}
+
+.article-prose ul,
+.article-prose ol {
+    margin: 2.3rem 0;
+    padding-left: 1.9rem;
+    color: var(--text-primary);
+    font-family: 'Charter', 'Georgia', 'Times New Roman', serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.article-prose li {
+    margin-bottom: 0.65rem;
+}
+
+.article-prose blockquote {
+    border-left: 2px solid var(--border-subtle);
+    padding-left: 1.5rem;        /* pl-6 */
+    margin: 2rem 0;              /* mb-8 equivalent at bottom; keep some top spacing */
+    font-style: italic;          /* italic */
+    color: var(--text-secondary);/* text-text-secondary */
+}
+
+.article-prose blockquote cite {
+    display: block;              /* block */
+    margin-top: 1rem;            /* mt-4 */
+    font-size: 0.75rem;          /* text-xs */
+    text-transform: uppercase;   /* uppercase */
+    letter-spacing: 0.3em;       /* tracking-[0.3em] */
+    color: var(--text-light);    /* text-text-light */
+    font-style: normal;          /* not-italic */
+}
+
+.article-prose pre {
+    background: #0f0f0f;
+    color: #f5f5f5;
+    border-radius: 22px;
+    padding: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 2.8rem 0;
+}
+
+.article-prose code {
+    font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+    background: rgba(15, 15, 15, 0.06);
+    padding: 0.22rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.article-prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    margin: 3.2rem auto;
+    box-shadow: 0 32px 90px -70px rgba(15, 15, 15, 0.55);
+}
+
+.article-prose table {
+    width: 100%;
+    border-collapse: collapse;          /* Dense, newspaper-like rules */
+    margin: 2.25rem auto;               /* Slightly tighter than prose blocks */
+    font-family: 'Charter', 'Georgia', 'Times New Roman', serif;
+    font-size: 0.98rem;
+    background: transparent;            /* No fills/shading */
+    border: none;                        /* No outer frame */
+}
+
+.article-prose thead {
+    background: transparent;             /* Remove gradients/shading */
+}
+
+.article-prose th,
+.article-prose td {
+    border-bottom: 1px solid rgba(15, 15, 15, 0.14); /* Hairline row rules */
+    padding: 0.55rem 0.9rem;             /* Compact cells for info density */
+    text-align: left;
+    vertical-align: top;
+}
+
+.article-prose th {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;              /* Subtle, not shouty */
+    text-transform: none;                /* Literary, not tabular UI */
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 2px solid rgba(15, 15, 15, 0.55); /* Stronger header rule */
+}
+
+.article-prose tr:last-child td {
+    border-bottom: none;
+}
+
+/* Remove zebra striping and hover shading for a neutral page texture */
+.article-prose tbody tr:nth-child(odd) {
+    background: transparent;
+}
+
+.article-prose tbody tr:hover {
+    background: transparent;
+}
+
+
+
+@media (max-width: 1023px) {
+    .article-toc { display: none !important; }
+}
+
+@media (min-width: 1024px) {
+    .article-shell { display: block; position: relative; }
+    /* nav uses the same global rule above to align width with article */
+    .article-shell > article { width: 100%; max-width: 750px; margin: 0 auto; }
+    .article-shell > .article-toc {
+        position: fixed;          /* keep visible while scrolling */
+        top: 9rem;                /* align with header/breadcrumb */
+        width: 260px;             /* right rail width */
+        left: calc(50% + 375px + 2rem); /* 50% viewport + half article width + gap */
+        z-index: 10;
+    }

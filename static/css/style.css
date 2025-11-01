@@ -937,7 +937,13 @@ code, pre, .mono {
         line-height: 1.6;
     }
     
-    .article-meta {
-        font-size: 0.8rem;
-    }
+.article-meta {
+    font-size: 0.8rem;
 }
+}
+
+/* Shared article typography */
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {

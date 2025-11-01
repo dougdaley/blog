@@ -6,14 +6,13 @@
 <!-- Reading Progress Bar -->
 <div class="fixed top-0 left-0 h-0.5 bg-text-primary z-50 transition-all duration-100" id="reading-progress"></div>
 
-<div class="max-w-4xl mx-auto px-8 py-12">
+<div class="article-shell mx-auto px-6 sm:px-8 lg:px-12 py-12">
     <!-- Breadcrumb Navigation -->
     <nav class="mb-12 text-sm text-text-muted font-sans tracking-wide">
         <a href="/blog" class="hover:border-b hover:border-text-muted transition-all">← Articles</a>
     </nav>
     
-    <div class="grid lg:grid-cols-[1fr_240px] gap-16">
-        <article class="max-w-reading">
+    <article>
             <header class="mb-16 pb-8 border-b border-border-subtle">
                 <h1 class="text-5xl font-sans font-bold text-text-primary mb-6 leading-tight tracking-tight">
                     {{ post.title }}
@@ -32,21 +31,24 @@
                     <span>5 min read</span>
                 </div>
             </header>
-            
-            <div class="prose prose-lg max-w-none" id="article-content">
-                {{ post.content|safe }}
+
+            <div class="article-prose" id="article-content">
+                {% if post.html %}
+                    {{ post.html|safe }}
+                {% else %}
+                    {{ post.content|safe }}
+                {% endif %}
             </div>
-        </article>
-        
-        <aside class="sticky top-36 h-fit">
-            <div class="border-l-2 border-border-subtle pl-6">
-                <h3 class="text-sm font-medium text-text-muted font-sans tracking-wide uppercase mb-5">Contents</h3>
-                <nav id="table-of-contents" class="space-y-3">
-                    <!-- TOC will be populated by JavaScript -->
-                </nav>
-            </div>
-        </aside>
-    </div>
+    </article>
+
+    <aside class="article-toc hidden lg:block">
+        <div class="border-l-2 border-border-subtle pl-6">
+            <h3 class="text-sm font-medium text-text-muted font-sans tracking-wide uppercase mb-5">Contents</h3>
+            <nav id="table-of-contents" class="space-y-3">
+                <!-- TOC will be populated by JavaScript -->
+            </nav>
+        </div>
+    </aside>
 </div>
 
 <script>

@@ -14,9 +14,10 @@ This is a Python Flask project for a personal website that serves as both a blog
 
 ## Setup Instructions
 1. Clone this repository.
-2. Install dependencies: `pip install -r requirements.txt`
-3. Set up your GitHub data source (see below).
-4. Run the Flask app: `python app.py`
+2. Create and activate a virtual environment: `uv venv && source .venv/bin/activate`
+3. Install dependencies: `uv pip install flask requests PyYAML markdown`
+4. Set up your GitHub data source (see below).
+5. Run the Flask app: `python app.py`
 
 ## Data Source
 - Blog posts and project data should be stored in a public GitHub repository as markdown or JSON files.

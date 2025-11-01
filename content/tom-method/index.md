@@ -17,13 +17,8 @@ The Target Operating Model Method addresses this challenge by providing a system
 
 *The conceptual foundation that guides all subsequent work, establishing the philosophical and practical principles that distinguish effective transformation approaches.*
 
-- **[Why Target Operating Models Matter](01-foundation/why-target-operating-models-matter)** - The strategic case for systematic transformation design *(8 min)*
-- **[The Four Principles of Technology Enablement](01-foundation/four-principles-technology-enablement)** - Business-led, human-centered, iterative, and sustainable *(6 min)*
-- **[Beyond Implementation: Designing for Evolution](01-foundation/beyond-implementation-designing-evolution)** - Creating adaptive capabilities rather than fixed solutions *(7 min)*
 
-### Chapter II: Strategy & Vision
-
-*Establishing transformation intent, defining success measures, and aligning technology strategy with business outcomes to create a coherent direction for change.*
+**[Why Target Operating Models Matter](/tom-method/01-foundation/why-target-operating-models-matter)** - The strategic case for systematic transformation design *(8 min)*
 
 - **[Defining Transformation Outcomes](02-strategy/defining-transformation-outcomes)** - Moving beyond efficiency gains to strategic capability development *(9 min)*
 - **[The Technology Strategy Canvas](02-strategy/technology-strategy-canvas)** - A framework for aligning technology investments with business strategy *(12 min)*

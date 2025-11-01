@@ -1,0 +1,510 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{% if article %}Edit Article{% else %}New Article{% endif %}{% endblock %}
+
+{% block content %}
+<div class="admin-shell space-y-12">
+    <div class="space-y-6">
+        <span class="floating-badge">Article Studio</span>
+        <input
+            id="article-title"
+            class="page-title-input"
+            type="text"
+            placeholder="Give this story a compelling title"
+            value="{{ article.title if article else '' }}"
+            autocomplete="off">
+        <input
+            id="article-subtitle"
+            class="page-subtitle-input"
+            type="text"
+            placeholder="Add a refined subtitle to frame the narrative"
+            value="{{ article.subtitle if article else '' }}"
+            autocomplete="off">
+    </div>
+
+    <div class="notion-toolbar rounded-full">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-[0.7rem] font-sans tracking-[0.28em] uppercase text-text-light">
+            <span>Status:
+                <span id="status-label" class="text-text-secondary tracking-normal uppercase">
+                    {% if article %}{{ article.status|capitalize }}{% else %}Draft{% endif %}
+                </span>
+            </span>
+            <span class="sm:ml-4 tracking-normal text-text-muted" id="last-updated">
+                {% if article %}
+                    Last updated {{ article.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                {% else %}
+                    Unsaved draft
+                {% endif %}
+            </span>
+            <span class="sm:ml-4 tracking-normal text-text-muted hidden" id="autosave-indicator">Saving…</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="save-draft-btn" type="button">Save Draft</button>
+            <button id="publish-btn" type="button" class="primary">
+                {% if article and article.status == 'published' %}Update{% else %}Publish{% endif %}
+            </button>
+        </div>
+    </div>
+
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,3fr)_minmax(280px,1fr)]">
+        <section class="notion-surface overflow-hidden">
+            <div class="editor-shell editor-prose">
+                <div id="editor-container" class="min-h-[32rem]"></div>
+            </div>
+        </section>
+
+        <aside class="meta-stack">
+            <div class="meta-card">
+                <label for="article-slug">Slug</label>
+                <input
+                    id="article-slug"
+                    type="text"
+                    placeholder="article-url-slug"
+                    value="{{ article.slug if article else '' }}"
+                    autocomplete="off">
+                <p class="text-xs font-sans tracking-[0.24em] uppercase text-text-light mt-2">Leave blank to auto-generate from the title.</p>
+            </div>
+
+            <div class="meta-card">
+                <label for="article-status">Visibility</label>
+                <select id="article-status">
+                    <option value="draft" {% if not article or article.status == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="published" {% if article and article.status == 'published' %}selected{% endif %}>Published</option>
+                    <option value="archived" {% if article and article.status == 'archived' %}selected{% endif %}>Archived</option>
+                </select>
+            </div>
+
+            <div class="meta-card">
+                <label for="article-author">Author</label>
+                <input
+                    id="article-author"
+                    type="text"
+                    placeholder="Author name"
+                    value="{{ article.author if article else '' }}">
+            </div>
+
+            <div class="meta-card">
+                <label for="article-reading-time">Reading Time</label>
+                <input
+                    id="article-reading-time"
+                    type="text"
+                    placeholder="e.g. 5 min read"
+                    value="{{ article.reading_time if article else '' }}">
+            </div>
+
+            <div class="meta-card">
+                <label for="article-excerpt">Excerpt</label>
+                <textarea
+                    id="article-excerpt"
+                    rows="3"
+                    placeholder="A graceful summary that entices the reader">{{ article.excerpt if article else '' }}</textarea>
+            </div>
+
+            <div class="meta-card">
+                <label for="article-meta-description">Meta Description</label>
+                <textarea
+                    id="article-meta-description"
+                    rows="3"
+                    placeholder="SEO description to appear in search results">{{ article.meta_description if article else '' }}</textarea>
+            </div>
+
+            {% if article %}
+            <div class="meta-card">
+                <label>Actions</label>
+                <div class="flex flex-col gap-3">
+                    {% if article.status == 'published' %}
+                    <a href="/blog/{{ article.slug }}" target="_blank"
+                       class="text-center inline-flex items-center justify-center rounded-full border border-text-primary/20 px-4 py-2 font-sans text-xs tracking-[0.25em] uppercase text-text-secondary hover:text-text-primary transition-colors">
+                        View Live ↗
+                    </a>
+                    {% endif %}
+                    <button id="delete-btn"
+                            type="button"
+                            class="rounded-full border border-red-200 px-4 py-2 font-sans text-xs tracking-[0.25em] uppercase text-red-500 hover:bg-red-50 transition-colors">
+                        Delete Article
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+
+    <section class="notion-surface preview-shell">
+        <div class="editor-preview">
+            <div class="preview-heading">Live Preview</div>
+            <article class="mt-10 max-w-reading mx-auto space-y-12">
+                <header class="space-y-6 pb-8 border-b border-border-subtle">
+                    <h1 id="preview-title" class="text-5xl font-sans font-bold text-text-primary leading-tight tracking-tight">
+                        {% if article %}{{ article.title }}{% else %}Start writing to see the preview…{% endif %}
+                    </h1>
+                    <p id="preview-subtitle" class="text-xl text-text-secondary italic leading-relaxed border-l-2 border-border-subtle pl-6">
+                        {% if article and article.subtitle %}{{ article.subtitle }}{% else %}Subtitles appear here as thoughtful context for the reader.{% endif %}
+                    </p>
+                    <div class="flex flex-wrap gap-6 text-sm text-text-light font-sans tracking-wide uppercase">
+                        <span id="preview-meta-status">{% if article %}{{ article.status|capitalize }}{% else %}Draft{% endif %}</span>
+                        <span id="preview-meta-author">{% if article and article.author %}{{ article.author }}{% else %}Author{% endif %}</span>
+                        <span id="preview-meta-reading">{% if article and article.reading_time %}{{ article.reading_time }}{% else %}Reading time{% endif %}</span>
+                    </div>
+                </header>
+
+                <div id="preview-content" class="article-prose">
+                    {% if article and article.content_type == 'editorjs' %}
+                        {{ article.render_html()|safe }}
+                    {% else %}
+                        <p class="text-text-muted italic">As you craft your narrative in the editor, the beautifully rendered article will unfurl here in real time.</p>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+    </section>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 bg-text-primary/50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen px-6">
+        <div class="admin-panel max-w-md w-full p-8 space-y-6">
+            <h3 class="font-sans text-lg tracking-[0.24em] uppercase text-text-primary">Delete Article?</h3>
+            <p class="text-text-secondary leading-relaxed">This action cannot be undone. The article and all of its content will be permanently removed.</p>
+            <div class="flex gap-3">
+                <button id="confirm-delete" type="button" class="flex-1 rounded-full border border-red-300 bg-red-500 text-white py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-red-600 transition-colors">
+                    Delete
+                </button>
+                <button id="cancel-delete" type="button" class="flex-1 rounded-full border border-border-subtle bg-white py-3 font-sans text-xs tracking-[0.3em] uppercase text-text-secondary hover:bg-cream transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+class ArticleEditor {
+    constructor() {
+        this.articleId = {{ article.id if article else 'null' }};
+        this.editor = null;
+        this.autosaveInterval = null;
+        this.previewTimeout = null;
+        this.isDirty = false;
+    }
+
+    async init() {
+        await this.initEditor();
+        this.setupEventListeners();
+        this.setupAutosave();
+
+        if (this.articleId) {
+            await this.loadArticle();
+        }
+
+        this.updatePreviewMeta();
+        this.queuePreviewUpdate();
+    }
+
+    async initEditor() {
+        if (typeof EditorJS === 'undefined') {
+            document.getElementById('editor-container').innerHTML = '<div class="p-6 text-red-600">EditorJS failed to load. Please refresh the page.</div>';
+            return;
+        }
+
+        const availableTools = {};
+        if (typeof Header !== 'undefined') {
+            availableTools.header = {
+                class: Header,
+                config: {
+                    placeholder: 'Heading',
+                    levels: [1, 2, 3, 4],
+                    defaultLevel: 2
+                }
+            };
+        }
+        if (typeof List !== 'undefined') {
+            availableTools.list = { class: List, inlineToolbar: ['link', 'bold', 'italic'] };
+        }
+        if (typeof Quote !== 'undefined') {
+            availableTools.quote = {
+                class: Quote,
+                inlineToolbar: ['italic'],
+                config: {
+                    quotePlaceholder: 'A considered quotation…',
+                    captionPlaceholder: 'Attribution'
+                }
+            };
+        }
+        if (typeof Delimiter !== 'undefined') {
+            availableTools.delimiter = Delimiter;
+        }
+        if (typeof Table !== 'undefined') {
+            availableTools.table = { class: Table, inlineToolbar: true };
+        }
+        if (typeof Code !== 'undefined') {
+            availableTools.code = { class: Code, config: { placeholder: 'Write code...' } };
+        }
+        if (typeof Raw !== 'undefined') {
+            availableTools.raw = { class: Raw, config: { placeholder: 'Embed HTML …' } };
+        }
+
+        this.editor = new EditorJS({
+            holder: 'editor-container',
+            autofocus: true,
+            placeholder: 'Begin your draft and shape the narrative…',
+            tools: availableTools,
+            inlineToolbar: ['link', 'bold', 'italic'],
+            onChange: () => {
+                this.isDirty = true;
+                this.queuePreviewUpdate();
+                this.toggleAutosaveIndicator(true);
+            }
+        });
+
+        await this.editor.isReady;
+    }
+
+    setupEventListeners() {
+        const titleInput = document.getElementById('article-title');
+        const slugInput = document.getElementById('article-slug');
+        const subtitleInput = document.getElementById('article-subtitle');
+
+        titleInput.addEventListener('input', () => {
+            if (!slugInput.value || slugInput.dataset.auto === 'true') {
+                slugInput.value = this.slugify(titleInput.value);
+                slugInput.dataset.auto = 'true';
+            }
+            this.updatePreviewMeta();
+        });
+
+        subtitleInput.addEventListener('input', () => this.updatePreviewMeta());
+        slugInput.addEventListener('input', () => { slugInput.dataset.auto = 'false'; });
+
+        document.getElementById('article-author').addEventListener('input', () => this.updatePreviewMeta());
+        document.getElementById('article-reading-time').addEventListener('input', () => this.updatePreviewMeta());
+        document.getElementById('article-status').addEventListener('change', (event) => {
+            this.updateStatusLabel(event.target.value);
+            this.updatePreviewMeta();
+        });
+
+        document.getElementById('save-draft-btn').addEventListener('click', async () => {
+            await this.save('draft');
+        });
+
+        document.getElementById('publish-btn').addEventListener('click', async () => {
+            document.getElementById('article-status').value = 'published';
+            await this.save('published');
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+                event.preventDefault();
+                this.save('draft');
+            }
+        });
+
+        {% if article %}
+        document.getElementById('delete-btn').addEventListener('click', () => {
+            document.getElementById('delete-modal').classList.remove('hidden');
+        });
+        document.getElementById('cancel-delete').addEventListener('click', () => {
+            document.getElementById('delete-modal').classList.add('hidden');
+        });
+        document.getElementById('confirm-delete').addEventListener('click', () => this.deleteArticle());
+        {% endif %}
+    }
+
+    setupAutosave() {
+        this.autosaveInterval = setInterval(async () => {
+            if (this.articleId && this.isDirty) {
+                await this.save('auto', false);
+            }
+        }, 30000);
+    }
+
+    async loadArticle() {
+        try {
+            const response = await fetch(`/api/articles/${this.articleId}`);
+            const article = await response.json();
+
+            if (article.content && article.content_type === 'editorjs') {
+                await this.editor.render(article.content);
+            }
+
+            this.updatePreviewMeta(article);
+            this.queuePreviewUpdate();
+        } catch (error) {
+            console.error('Error loading article', error);
+            window.showNotification('Failed to load article content', 'error');
+        }
+    }
+
+    async save(status = 'draft', showNotification = true) {
+        try {
+            this.toggleAutosaveIndicator(true);
+            const outputData = await this.editor.save();
+
+            const articleData = {
+                title: document.getElementById('article-title').value,
+                subtitle: document.getElementById('article-subtitle').value,
+                slug: document.getElementById('article-slug').value,
+                author: document.getElementById('article-author').value,
+                reading_time: document.getElementById('article-reading-time').value,
+                excerpt: document.getElementById('article-excerpt').value,
+                meta_description: document.getElementById('article-meta-description').value,
+                status: status === 'auto' ? document.getElementById('article-status').value : status,
+                content_type: 'editorjs',
+                content: outputData
+            };
+
+            const response = await fetch(this.articleId ? `/api/articles/${this.articleId}` : '/api/articles', {
+                method: this.articleId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(articleData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save article');
+            }
+
+            const savedArticle = await response.json();
+
+            if (!this.articleId) {
+                this.articleId = savedArticle.id;
+                history.pushState({}, '', `/admin/articles/${savedArticle.id}`);
+            }
+
+            document.getElementById('article-status').value = savedArticle.status;
+            this.updateStatusLabel(savedArticle.status);
+            this.isDirty = false;
+            this.toggleAutosaveIndicator(false);
+            this.updatePreviewMeta(savedArticle);
+            const lastUpdated = document.getElementById('last-updated');
+            if (lastUpdated && savedArticle.updated_at) {
+                const updatedDate = new Date(savedArticle.updated_at);
+                lastUpdated.textContent = `Last updated ${updatedDate.toLocaleString()}`;
+            }
+
+            if (showNotification) {
+                const message = savedArticle.status === 'published' ? 'Article published!' : 'Draft saved';
+                window.showNotification(message, 'success');
+            }
+
+            this.queuePreviewUpdate();
+            return savedArticle;
+        } catch (error) {
+            console.error('Save error:', error);
+            if (showNotification) {
+                window.showNotification('Failed to save article', 'error');
+            }
+            this.toggleAutosaveIndicator(false);
+            throw error;
+        }
+    }
+
+    updateStatusLabel(status) {
+        const statusLabel = document.getElementById('status-label');
+        const previewStatus = document.getElementById('preview-meta-status');
+        const pretty = status.charAt(0).toUpperCase() + status.slice(1);
+        statusLabel.textContent = pretty;
+        previewStatus.textContent = pretty;
+    }
+
+    updatePreviewMeta(article = null) {
+        const data = article || {
+            title: document.getElementById('article-title').value,
+            subtitle: document.getElementById('article-subtitle').value,
+            author: document.getElementById('article-author').value,
+            reading_time: document.getElementById('article-reading-time').value,
+            status: document.getElementById('article-status').value
+        };
+
+        document.getElementById('preview-title').textContent = data.title || 'Start writing to see the preview…';
+        document.getElementById('preview-subtitle').textContent = data.subtitle || 'Subtitles appear here as thoughtful context for the reader.';
+        document.getElementById('preview-meta-author').textContent = data.author || 'Author';
+        document.getElementById('preview-meta-reading').textContent = data.reading_time || 'Reading time';
+        document.getElementById('preview-meta-status').textContent = data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1) : 'Draft';
+    }
+
+    queuePreviewUpdate() {
+        if (!this.editor) return;
+        clearTimeout(this.previewTimeout);
+        this.previewTimeout = setTimeout(() => this.renderPreview(), 400);
+    }
+
+    async renderPreview() {
+        if (!this.editor) return;
+
+        try {
+            const outputData = await this.editor.save();
+            const html = this.renderBlocks(outputData.blocks || []);
+            const previewContent = document.getElementById('preview-content');
+            previewContent.innerHTML = html || '<p class="text-text-muted italic">Compose in the editor to see the story unfold here.</p>';
+        } catch (error) {
+            console.error('Preview render error:', error);
+        }
+    }
+
+    renderBlocks(blocks) {
+        return blocks.map((block) => {
+            const data = block.data || {};
+            switch (block.type) {
+                case 'header':
+                    return `<h${data.level || 2} class="font-sans font-semibold text-text-primary mt-12 mb-6 tracking-tight">${data.text || ''}</h${data.level || 2}>`;
+                case 'paragraph':
+                    return `<p class="leading-relaxed mb-6 text-text-primary">${data.text || ''}</p>`;
+                case 'list':
+                    const tag = data.style === 'ordered' ? 'ol' : 'ul';
+                    const items = (data.items || []).map(item => `<li class="mb-2">${item}</li>`).join('');
+                    return `<${tag} class="pl-8 my-6 space-y-2">${items}</${tag}>`;
+                case 'quote':
+                    return `<blockquote class="border-l-2 border-border-subtle pl-6 italic text-text-secondary mb-8">${data.text || ''}${data.caption ? `<cite class="not-italic block mt-4 text-xs uppercase tracking-[0.3em] text-text-light">— ${data.caption}</cite>` : ''}</blockquote>`;
+                case 'code':
+                    return `<pre class="bg-text-primary text-white rounded-2xl p-6 text-sm overflow-auto"><code>${data.code || ''}</code></pre>`;
+                case 'delimiter':
+                    return `<hr class="my-12 border-border-subtle">`;
+                case 'table':
+                    const rows = (data.content || []).map((row, index) => {
+                        const cells = (row || []).map(cell => `<${index === 0 && data.withHeadings ? 'th' : 'td'} class="border border-border-subtle px-4 py-2">${cell}</${index === 0 && data.withHeadings ? 'th' : 'td'}>`).join('');
+                        return `<tr>${cells}</tr>`;
+                    }).join('');
+                    return `<div class="overflow-x-auto my-8"><table class="min-w-full border border-border-subtle text-sm">${rows}</table></div>`;
+                default:
+                    return '';
+            }
+        }).join('');
+    }
+
+    toggleAutosaveIndicator(isSaving) {
+        const indicator = document.getElementById('autosave-indicator');
+        if (!indicator) return;
+        indicator.classList.toggle('hidden', !isSaving);
+    }
+
+    async deleteArticle() {
+        if (!this.articleId) return;
+        try {
+            const response = await fetch(`/api/articles/${this.articleId}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error();
+            window.showNotification('Article deleted', 'success');
+            setTimeout(() => { window.location.href = '/admin/articles'; }, 800);
+        } catch (error) {
+            window.showNotification('Failed to delete article', 'error');
+        } finally {
+            document.getElementById('delete-modal').classList.add('hidden');
+        }
+    }
+
+    slugify(text) {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const editor = new ArticleEditor();
+    await editor.init();
+});
+</script>
+{% endblock %}

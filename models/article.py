@@ -28,6 +28,11 @@ class Article(db.Model):
     
     # Publishing
     status = db.Column(db.String(20), default='draft')  # 'draft', 'published', 'archived'
+    section = db.Column(db.String(50), default='blog', index=True)  # blog, tom_method, portfolio, etc.
+    subsection = db.Column(db.String(100))  # additional grouping (e.g., portfolio category)
+    chapter_slug = db.Column(db.String(100), index=True)  # for TOM Method chapters
+    chapter_order = db.Column(db.Integer)  # order within chapter
+    featured_order = db.Column(db.Integer)  # ordering for featured lists/landing pages
     published_at = db.Column(db.DateTime)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -125,6 +130,11 @@ class Article(db.Model):
             'author': self.author,
             'status': self.status,
             'published_at': self.published_at.isoformat() if self.published_at else None,
+            'section': self.section,
+            'subsection': self.subsection,
+            'chapter_slug': self.chapter_slug,
+            'chapter_order': self.chapter_order,
+            'featured_order': self.featured_order,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'content_type': self.content_type,

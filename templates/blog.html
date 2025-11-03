@@ -9,39 +9,42 @@
         <div class="w-16 h-0.5 bg-border-subtle mx-auto"></div>
     </header>
 
-    {% if posts %}
-        <div class="space-y-12">
-            {% for post in posts %}
-            <article class="py-8 border-b border-border-subtle last:border-b-0 group hover:pl-4 transition-all duration-300 relative">
-                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-text-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                
-                <h2 class="text-3xl font-sans font-semibold text-text-primary mb-4 leading-tight tracking-tight">
-                    <a href="/blog/{{ post.filename.replace('.md', '').lower().replace(' ', '-') }}" class="hover:text-text-muted transition-colors">
-                        {{ post.title }}
-                    </a>
-                </h2>
-                
-                {% if post.excerpt %}
-                    <p class="text-lg text-text-secondary mb-6 leading-relaxed max-w-reading">
-                        {{ post.excerpt }}
-                    </p>
+{% if posts %}
+    <div class="space-y-12">
+        {% for post in posts %}
+        <article class="py-8 border-b border-border-subtle last:border-b-0 group hover:pl-4 transition-all duration-300 relative">
+            <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-16 bg-text-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+            <h2 class="text-3xl font-sans font-semibold text-text-primary mb-4 leading-tight tracking-tight">
+                <a href="{{ post.url }}" class="hover:text-text-muted transition-colors">
+                    {{ post.title }}
+                </a>
+            </h2>
+
+            {% if post.excerpt %}
+                <p class="text-lg text-text-secondary mb-6 leading-relaxed max-w-reading">
+                    {{ post.excerpt }}
+                </p>
+            {% endif %}
+
+            <div class="text-sm text-text-light font-sans tracking-wide uppercase flex flex-wrap gap-4">
+                {% if post.display_date %}
+                    <span>{{ post.display_date }}</span>
                 {% endif %}
-                
-                {% if post.date %}
-                    <div class="text-sm text-text-light font-sans tracking-wide uppercase">
-                        Published on {{ post.date }}
-                    </div>
+                {% if post.reading_time %}
+                    <span>{{ post.reading_time }}</span>
                 {% endif %}
-            </article>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="text-center py-20 border border-border-subtle rounded-lg bg-cream">
-            <h2 class="text-2xl font-sans font-semibold text-text-secondary mb-4">No Articles Yet</h2>
-            <p class="text-lg text-text-muted max-w-md mx-auto leading-relaxed">
-                Articles will appear here once they're added to your GitHub repository.
-            </p>
-        </div>
-    {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-20 border border-border-subtle rounded-lg bg-cream">
+        <h2 class="text-2xl font-sans font-semibold text-text-secondary mb-4">No Articles Yet</h2>
+        <p class="text-lg text-text-muted max-w-md mx-auto leading-relaxed">
+            Publish your first article from the Content Studio to bring this page to life.
+        </p>
+    </div>
+{% endif %}
 </div>
 {% endblock %}

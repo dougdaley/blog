@@ -106,6 +106,22 @@ class ArticlesManager {
         this.setupEventListeners();
         this.renderArticles();
     }
+
+    viewUrlFor(article) {
+        if (article.section === 'blog') {
+            return `/blog/${article.slug}`;
+        }
+        if (article.section === 'portfolio') {
+            return `/portfolio/${article.slug}`;
+        }
+        if (article.section === 'tom_method') {
+            if (article.chapter_slug) {
+                return `/tom-method/${article.chapter_slug}/${article.slug}`;
+            }
+            return '/tom-method';
+        }
+        return `/${article.slug}`;
+    }
     
     async loadArticles() {
         try {
@@ -211,8 +227,9 @@ class ArticlesManager {
                             </div>
                             <div class="flex flex-wrap gap-3 text-xs font-sans uppercase tracking-[0.26em] text-text-muted">
                                 <span class="status-badge ${this.getStatusColor(article.status)}">${article.status || 'draft'}</span>
+                                <span class="rounded-full border border-border-subtle px-3 py-1">${(article.section || 'blog').replaceAll('_', ' ')}</span>
                                 <span class="rounded-full border border-border-subtle px-3 py-1">${article.content_type || 'markdown'}</span>
-                                ${article.status === 'published' ? `<a href="/blog/${article.slug}" target="_blank" class="rounded-full border border-border-subtle px-3 py-1 text-text-secondary hover:text-text-primary transition-colors">View ↗</a>` : ''}
+                                ${article.status === 'published' ? `<a href="${this.viewUrlFor(article)}" target="_blank" class="rounded-full border border-border-subtle px-3 py-1 text-text-secondary hover:text-text-primary transition-colors">View ↗</a>` : ''}
                                 <a href="/admin/articles/${article.id}" class="rounded-full border border-border-subtle px-3 py-1 text-text-secondary hover:text-text-primary transition-colors">Edit</a>
                                 <button class="delete-article rounded-full border border-red-200 px-3 py-1 text-red-500 hover:bg-red-500/10 transition-colors" data-id="${article.id}">Delete</button>
                             </div>

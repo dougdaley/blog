@@ -10,9 +10,9 @@
     <!-- Breadcrumb Navigation -->
     <nav class="mb-12 text-sm text-text-muted font-sans tracking-wide">
         <a href="/tom-method" class="hover:border-b hover:border-text-muted transition-all">← The TOM Method</a>
-        {% if article.chapter %}
+        {% if chapter_meta %}
             <span class="mx-2">→</span>
-            <span>{{ article.chapter.title }}</span>
+            <span>{{ chapter_meta.title }}</span>
             <span class="mx-2">→</span>
             <span class="text-text-secondary">{{ article.title }}</span>
         {% endif %}
@@ -31,18 +31,23 @@
                     </div>
                 {% endif %}
                 
-                <div class="flex gap-8 text-sm text-text-muted font-sans">
-                    {% if article.chapter %}
-                        <span>Chapter {{ article.chapter.number }}: {{ article.chapter.title }}</span>
+                <div class="flex gap-8 text-sm text-text-muted font-sans mb-4">
+                    {% if chapter_meta %}
+                        <span>Chapter {{ chapter_meta.number }}: {{ chapter_meta.title }}</span>
                     {% endif %}
                     {% if article.reading_time %}
                         <span>{{ article.reading_time }}</span>
                     {% endif %}
                 </div>
+                {% if chapter_meta and chapter_meta.excerpt %}
+                    <div class="text-sm text-text-secondary italic">
+                        {{ chapter_meta.excerpt }}
+                    </div>
+                {% endif %}
             </header>
             
-            <div class="prose prose-lg max-w-none" id="article-content">
-                {{ article.content|safe }}
+            <div class="article-prose" id="article-content">
+                {{ article.render_html()|safe }}
             </div>
         </article>
         
@@ -147,37 +152,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-/* Basic prose styling for markdown content */
-.prose h2 {
-    @apply text-3xl font-sans font-medium text-text-primary mt-16 mb-8 leading-tight tracking-tight;
-}
-.prose h3 {
-    @apply text-xl font-sans font-medium text-text-primary mt-12 mb-6;
-}
-.prose p {
-    @apply mb-6 text-text-primary leading-relaxed;
-}
-.prose ul, .prose ol {
-    @apply my-8 pl-8;
-}
-.prose li {
-    @apply mb-4 leading-relaxed;
-}
-.prose blockquote {
-    @apply border-l-2 border-border-subtle pl-8 my-8 italic text-text-secondary text-lg;
-}
-.prose a {
-    @apply text-text-primary underline underline-offset-2 hover:underline-offset-4 transition-all;
-}
-.prose code {
-    @apply bg-cream text-red-600 px-2 py-1 rounded text-sm font-mono;
-}
-.prose pre {
-    @apply bg-cream border border-border-subtle rounded p-6 my-8 overflow-x-auto;
-}
-.prose pre code {
-    @apply bg-transparent text-text-secondary p-0;
-}
-</style>
 {% endblock %}

@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from app_new import create_app
 from models.article import db, Article, Tag
 from models.business import BusinessProcess, Control, Role, MaturityAssessment
+from models.navigation import NavigationItem
 from datetime import datetime
 
 
@@ -103,7 +104,8 @@ def create_sample_data():
         excerpt="A comprehensive overview of the new content management capabilities.",
         author="System",
         reading_time="5 min read",
-        status="published"
+        status="published",
+        section="blog"
     )
     article1.set_content_from_editorjs(sample_editorjs_content)
     article1.publish()
@@ -133,7 +135,8 @@ The system seamlessly handles both EditorJS and Markdown content, converting bot
         excerpt="See how existing markdown content continues to work perfectly.",
         author="System",
         reading_time="3 min read",
-        status="published"
+        status="published",
+        section="blog"
     )
     article2.set_content_from_markdown(sample_markdown)
     article2.publish()
@@ -146,7 +149,8 @@ The system seamlessly handles both EditorJS and Markdown content, converting bot
         excerpt="An example of a draft article in the system.",
         author="Editor",
         reading_time="2 min read",
-        status="draft"
+        status="draft",
+        section="blog"
     )
     
     draft_content = {
@@ -305,6 +309,17 @@ The system seamlessly handles both EditorJS and Markdown content, converting bot
     
     # Commit all changes
     db.session.commit()
+
+    # Seed navigation if empty
+    if NavigationItem.query.count() == 0:
+        navigation_items = [
+            NavigationItem(label="Home", slug="home", section="home", position=0),
+            NavigationItem(label="Articles", slug="articles", section="blog", position=1),
+            NavigationItem(label="The TOM Method", slug="tom-method", section="tom_method", position=2),
+            NavigationItem(label="Portfolio", slug="portfolio", section="portfolio", position=3),
+        ]
+        db.session.add_all(navigation_items)
+        db.session.commit()
     print("Sample data creation completed!")
 
 

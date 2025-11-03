@@ -4,7 +4,6 @@ Converts EditorJS JSON blocks to clean, semantic HTML while maintaining
 the sophisticated literary design aesthetic.
 """
 
-import json
 import html
 from typing import Dict, Any, List, Optional
 import re

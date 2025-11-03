@@ -3,57 +3,125 @@
 {% block title %}{% if article %}Edit Article{% else %}New Article{% endif %}{% endblock %}
 
 {% block content %}
-<div class="admin-shell space-y-12">
-    <div class="space-y-6">
-        <span class="floating-badge">Article Studio</span>
-        <input
-            id="article-title"
-            class="page-title-input"
-            type="text"
-            placeholder="Give this story a compelling title"
-            value="{{ article.title if article else '' }}"
-            autocomplete="off">
-        <input
-            id="article-subtitle"
-            class="page-subtitle-input"
-            type="text"
-            placeholder="Add a refined subtitle to frame the narrative"
-            value="{{ article.subtitle if article else '' }}"
-            autocomplete="off">
-    </div>
-
-    <div class="notion-toolbar rounded-full">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-2 text-[0.7rem] font-sans tracking-[0.28em] uppercase text-text-light">
-            <span>Status:
-                <span id="status-label" class="text-text-secondary tracking-normal uppercase">
-                    {% if article %}{{ article.status|capitalize }}{% else %}Draft{% endif %}
-                </span>
-            </span>
-            <span class="sm:ml-4 tracking-normal text-text-muted" id="last-updated">
-                {% if article %}
-                    Last updated {{ article.updated_at.strftime('%Y-%m-%d %H:%M') }}
-                {% else %}
-                    Unsaved draft
-                {% endif %}
-            </span>
-            <span class="sm:ml-4 tracking-normal text-text-muted hidden" id="autosave-indicator">Saving…</span>
+<div class="studio-container">
+    <div class="studio-topbar">
+        <div class="topbar-left">
+            <span class="floating-badge">Article Studio</span>
+            
         </div>
-        <div class="flex items-center gap-3">
-            <button id="save-draft-btn" type="button">Save Draft</button>
+        <div class="topbar-actions">
+            <button id="save-draft-btn" type="button" class="ghost">Save Draft</button>
             <button id="publish-btn" type="button" class="primary">
                 {% if article and article.status == 'published' %}Update{% else %}Publish{% endif %}
             </button>
         </div>
     </div>
 
-    <div class="grid gap-12 lg:grid-cols-[minmax(0,3fr)_minmax(280px,1fr)]">
-        <section class="notion-surface overflow-hidden">
-            <div class="editor-shell editor-prose">
-                <div id="editor-container" class="min-h-[32rem]"></div>
+    
+
+    <div class="studio-main">
+        <aside class="studio-sidebar">
+            <div class="sidebar-card">
+                <div class="sidebar-card-header">
+                    <h2>Document Structure</h2>
+                    <button type="button" class="nav-add-button" id="nav-add-button">+ Add Section</button>
+                </div>
+                <div id="nav-tree" class="nav-tree"></div>
+                <form id="nav-detail-form" class="nav-detail-form hidden">
+                    <input type="hidden" id="nav-item-id">
+                    <label>
+                        <span>Label</span>
+                        <input type="text" id="nav-label" required placeholder="Navigation label">
+                    </label>
+                    <label>
+                        <span>Slug</span>
+                        <input type="text" id="nav-slug" placeholder="identifier">
+                    </label>
+                    <label>
+                        <span>URL</span>
+                        <input type="text" id="nav-url" placeholder="/path or https://example.com">
+                    </label>
+                    <label>
+                        <span>Section</span>
+                        <input type="text" id="nav-section" list="section-options" placeholder="Section key">
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="nav-visible" checked>
+                        <span>Visible</span>
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="nav-external">
+                        <span>Open in new tab</span>
+                    </label>
+                    <div class="nav-form-actions">
+                        <button type="button" data-action="cancel" class="nav-form-cancel">Cancel</button>
+                        <button type="submit" class="nav-form-save">Save</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="sidebar-card">
+                <h2>Custom Components</h2>
+                <div class="component-list">
+                    <button type="button" data-component="businessProcess">+ Service Blueprint</button>
+                    <button type="button" data-component="maturityModel">+ Maturity Model</button>
+                    <button type="button" data-component="processFlow">+ Transformation Map</button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="studio-editor">
+            <div class="editor-controls">
+                <div class="studio-headline">
+                    <textarea
+                        id="article-title"
+                        class="page-title-input"
+                        placeholder="Give this story a compelling title"
+                        autocomplete="off"
+                        rows="2">{{ article.title if article else '' }}</textarea>
+                    <textarea
+                        id="article-subtitle"
+                        class="page-subtitle-input"
+                        placeholder="Add a refined subtitle to frame the narrative"
+                        autocomplete="off"
+                        rows="2">{{ article.subtitle if article else '' }}</textarea>
+                
+                    <div class="topbar-status">
+                        <span>Status: <span id="status-label">{% if article %}{{ article.status|capitalize }}{% else %}Draft{% endif %}</span></span>
+                        <span id="last-updated">
+                            {% if article %}
+                                Last updated {{ article.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                Unsaved draft
+                            {% endif %}
+                        </span>
+                        <span class="hidden" id="autosave-indicator">Saving…</span>
+
+                    </div>
+                </div>
+            </div>
+            <div class="editor-panels" id="editor-panels">
+                <div class="editor-view-toggle">
+                    <button type="button" class="mode-button active" data-mode="editor">Editor</button>
+                    <button type="button" class="mode-button" data-mode="preview">Preview</button>
+                </div>
+                <div class="editor-pane" id="editor-pane">
+                    <div id="editor-container" class="editor-canvas"></div>
+                </div>
+                <div class="preview-pane" id="preview-pane">
+                    <div class="preview-heading">Live Preview</div>
+                    <div class="article-prose" id="preview-content">
+                        {% if article and article.content_type == 'editorjs' %}
+                            {{ article.render_html()|safe }}
+                        {% else %}
+                            <p class="text-text-muted italic">Compose in the editor to see the story unfold here.</p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </section>
 
-        <aside class="meta-stack">
+        <aside class="studio-meta-panel">
             <div class="meta-card">
                 <label for="article-slug">Slug</label>
                 <input
@@ -63,6 +131,53 @@
                     value="{{ article.slug if article else '' }}"
                     autocomplete="off">
                 <p class="text-xs font-sans tracking-[0.24em] uppercase text-text-light mt-2">Leave blank to auto-generate from the title.</p>
+            </div>
+
+            <div class="meta-card" id="article-section-card">
+                <label for="article-section">Section</label>
+                <input
+                    id="article-section"
+                    type="text"
+                    list="section-options"
+                    placeholder="e.g. blog or tom_method"
+                    value="{{ article.section if article else 'blog' }}">
+
+                <div class="mt-4">
+                    <label for="article-subsection" class="block text-sm font-medium text-text-muted uppercase tracking-[0.24em] mb-2">Subsection</label>
+                    <input
+                        id="article-subsection"
+                        type="text"
+                        placeholder="Optional subgroup (e.g. Case Studies)"
+                        value="{{ article.subsection if article else '' }}">
+                </div>
+
+                <div class="mt-4">
+                    <label for="article-featured-order" class="block text-sm font-medium text-text-muted uppercase tracking-[0.24em] mb-2">Featured Order</label>
+                    <input
+                        id="article-featured-order"
+                        type="number"
+                        placeholder="Ordering on landing pages"
+                        value="{{ article.featured_order if article and article.featured_order is not none else '' }}">
+                </div>
+
+                <div id="tom-method-fields" class="mt-4 space-y-3 {% if not article or article.section != 'tom_method' %}hidden{% endif %}">
+                    <div>
+                        <label for="article-chapter-slug" class="block text-sm font-medium text-text-muted uppercase tracking-[0.24em] mb-2">Chapter Slug</label>
+                        <input
+                            id="article-chapter-slug"
+                            type="text"
+                            placeholder="e.g. 01-foundation"
+                            value="{{ article.chapter_slug if article else '' }}">
+                    </div>
+                    <div>
+                        <label for="article-chapter-order" class="block text-sm font-medium text-text-muted uppercase tracking-[0.24em] mb-2">Chapter Order</label>
+                        <input
+                            id="article-chapter-order"
+                            type="number"
+                            placeholder="Ordering within chapter"
+                            value="{{ article.chapter_order if article and article.chapter_order is not none else '' }}">
+                    </div>
+                </div>
             </div>
 
             <div class="meta-card">
@@ -113,7 +228,16 @@
                 <label>Actions</label>
                 <div class="flex flex-col gap-3">
                     {% if article.status == 'published' %}
-                    <a href="/blog/{{ article.slug }}" target="_blank"
+                    {% if article.section == 'tom_method' %}
+                        {% set live_url = '/tom-method/' + (article.chapter_slug or '') + '/' + article.slug %}
+                    {% elif article.section == 'portfolio' %}
+                        {% set live_url = '/portfolio/' + article.slug %}
+                    {% elif article.section == 'blog' %}
+                        {% set live_url = '/blog/' + article.slug %}
+                    {% else %}
+                        {% set live_url = '/' + article.slug %}
+                    {% endif %}
+                    <a href="{{ live_url }}" target="_blank"
                        class="text-center inline-flex items-center justify-center rounded-full border border-text-primary/20 px-4 py-2 font-sans text-xs tracking-[0.25em] uppercase text-text-secondary hover:text-text-primary transition-colors">
                         View Live ↗
                     </a>
@@ -128,36 +252,9 @@
             {% endif %}
         </aside>
     </div>
-
-    <section class="notion-surface preview-shell">
-        <div class="editor-preview">
-            <div class="preview-heading">Live Preview</div>
-            <article class="mt-10 max-w-reading mx-auto space-y-12">
-                <header class="space-y-6 pb-8 border-b border-border-subtle">
-                    <h1 id="preview-title" class="text-5xl font-sans font-bold text-text-primary leading-tight tracking-tight">
-                        {% if article %}{{ article.title }}{% else %}Start writing to see the preview…{% endif %}
-                    </h1>
-                    <p id="preview-subtitle" class="text-xl text-text-secondary italic leading-relaxed border-l-2 border-border-subtle pl-6">
-                        {% if article and article.subtitle %}{{ article.subtitle }}{% else %}Subtitles appear here as thoughtful context for the reader.{% endif %}
-                    </p>
-                    <div class="flex flex-wrap gap-6 text-sm text-text-light font-sans tracking-wide uppercase">
-                        <span id="preview-meta-status">{% if article %}{{ article.status|capitalize }}{% else %}Draft{% endif %}</span>
-                        <span id="preview-meta-author">{% if article and article.author %}{{ article.author }}{% else %}Author{% endif %}</span>
-                        <span id="preview-meta-reading">{% if article and article.reading_time %}{{ article.reading_time }}{% else %}Reading time{% endif %}</span>
-                    </div>
-                </header>
-
-                <div id="preview-content" class="article-prose">
-                    {% if article and article.content_type == 'editorjs' %}
-                        {{ article.render_html()|safe }}
-                    {% else %}
-                        <p class="text-text-muted italic">As you craft your narrative in the editor, the beautifully rendered article will unfurl here in real time.</p>
-                    {% endif %}
-                </div>
-            </article>
-        </div>
-    </section>
 </div>
+
+<datalist id="section-options"></datalist>
 
 <!-- Delete Confirmation Modal -->
 <div id="delete-modal" class="fixed inset-0 bg-text-primary/50 hidden z-50">
@@ -187,11 +284,19 @@ class ArticleEditor {
         this.autosaveInterval = null;
         this.previewTimeout = null;
         this.isDirty = false;
+        this.previewMode = 'split';
+        this.navigationItems = [];
+        this.dragIndex = null;
+        this.currentNavSelection = null;
     }
 
     async init() {
         await this.initEditor();
+        await this.loadSectionOptions();
+        await this.initNavigationPanel();
         this.setupEventListeners();
+        this.setupPreviewControls();
+        this.setupEditorToolbar();
         this.setupAutosave();
 
         if (this.articleId) {
@@ -277,8 +382,29 @@ class ArticleEditor {
         subtitleInput.addEventListener('input', () => this.updatePreviewMeta());
         slugInput.addEventListener('input', () => { slugInput.dataset.auto = 'false'; });
 
-        document.getElementById('article-author').addEventListener('input', () => this.updatePreviewMeta());
-        document.getElementById('article-reading-time').addEventListener('input', () => this.updatePreviewMeta());
+        const authorInput = document.getElementById('article-author');
+        const readingInput = document.getElementById('article-reading-time');
+        const sectionInput = document.getElementById('article-section');
+        const subsectionInput = document.getElementById('article-subsection');
+        const featuredInput = document.getElementById('article-featured-order');
+        const chapterSlugInput = document.getElementById('article-chapter-slug');
+        const chapterOrderInput = document.getElementById('article-chapter-order');
+
+        authorInput.addEventListener('input', () => this.updatePreviewMeta());
+        readingInput.addEventListener('input', () => this.updatePreviewMeta());
+        sectionInput.addEventListener('input', () => {
+            this.isDirty = true;
+            this.toggleSectionFields();
+            this.updatePreviewMeta();
+        });
+        [subsectionInput, featuredInput, chapterSlugInput, chapterOrderInput].forEach((input) => {
+            if (input) {
+                input.addEventListener('input', () => {
+                    this.isDirty = true;
+                });
+            }
+        });
+
         document.getElementById('article-status').addEventListener('change', (event) => {
             this.updateStatusLabel(event.target.value);
             this.updatePreviewMeta();
@@ -309,6 +435,19 @@ class ArticleEditor {
         });
         document.getElementById('confirm-delete').addEventListener('click', () => this.deleteArticle());
         {% endif %}
+
+        this.toggleSectionFields();
+    }
+
+    toggleSectionFields() {
+        const sectionInput = document.getElementById('article-section');
+        const tomFields = document.getElementById('tom-method-fields');
+        if (!sectionInput || !tomFields) return;
+        if (sectionInput.value === 'tom_method') {
+            tomFields.classList.remove('hidden');
+        } else {
+            tomFields.classList.add('hidden');
+        }
     }
 
     setupAutosave() {
@@ -319,6 +458,397 @@ class ArticleEditor {
         }, 30000);
     }
 
+    async loadSectionOptions() {
+        try {
+            const response = await fetch('/api/articles/sections');
+            if (!response.ok) {
+                throw new Error('Failed to load sections');
+            }
+            const sections = await response.json();
+            const datalist = document.getElementById('section-options');
+            if (!datalist) return;
+            datalist.innerHTML = '';
+            sections.forEach((section) => {
+                const option = document.createElement('option');
+                option.value = section;
+                datalist.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Failed to load sections', error);
+        }
+    }
+
+    setupPreviewControls() {
+        this.workspace = document.getElementById('editor-panels');
+        this.editorPane = document.getElementById('editor-pane');
+        this.previewPane = document.getElementById('preview-pane');
+        this.modeButtons = document.querySelectorAll('.mode-button');
+
+        this.modeButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                this.setPreviewMode(button.dataset.mode);
+            });
+        });
+
+        this.setPreviewMode(this.previewMode || 'split');
+    }
+
+    setPreviewMode(mode) {
+        this.previewMode = mode;
+        if (!this.workspace || !this.editorPane || !this.previewPane) {
+            return;
+        }
+
+        this.modeButtons.forEach((button) => {
+            button.classList.toggle('active', button.dataset.mode === mode);
+        });
+
+        this.workspace.classList.remove('split-mode');
+        this.editorPane.classList.remove('hidden');
+        this.previewPane.classList.remove('hidden', 'visible');
+
+        if (mode === 'editor') {
+            this.previewPane.classList.add('hidden');
+        } else if (mode === 'preview') {
+            this.editorPane.classList.add('hidden');
+            this.previewPane.classList.add('visible');
+        } else {
+            this.workspace.classList.add('split-mode');
+            this.previewPane.classList.add('visible');
+        }
+    }
+
+    setupEditorToolbar() {
+        const toolbar = document.getElementById('block-toolbar');
+        if (toolbar) {
+            toolbar.querySelectorAll('button[data-block]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.block;
+                    const options = {
+                        level: Number(button.dataset.level) || undefined,
+                        style: button.dataset.style
+                    };
+                    this.insertBlock(type, options);
+                });
+            });
+        }
+
+        document.querySelectorAll('[data-component]').forEach((button) => {
+            button.addEventListener('click', () => {
+                this.insertCustomComponent(button.dataset.component);
+            });
+        });
+    }
+
+    insertBlock(type, options = {}) {
+        if (!this.editor) {
+            return;
+        }
+        const data = {};
+        if (type === 'header' && options.level) {
+            data.level = options.level;
+        }
+        if (type === 'list') {
+            data.style = options.style || 'unordered';
+            data.items = ['List item'];
+        }
+        if (type === 'code') {
+            data.code = data.code || '';
+        }
+        if (type === 'quote') {
+            data.text = 'Quote text';
+            data.caption = '';
+        }
+        this.editor.blocks.insert(type, data, undefined, undefined, true).then(() => {
+            this.queuePreviewUpdate();
+        }).catch((error) => {
+            console.error('Failed to insert block', error);
+        });
+    }
+
+    insertCustomComponent(type) {
+        if (!this.editor) {
+            return;
+        }
+        const presets = {
+            businessProcess: {
+                name: 'New Process',
+                description: 'Describe the process goal and context.',
+                owner: 'Process Owner',
+                steps: [
+                    { description: 'First step of the process.' },
+                    { description: 'Second step to follow.' }
+                ]
+            },
+            maturityModel: {
+                domain: 'Capability Name',
+                levels: [
+                    { name: 'Level 1', description: 'Initial capability description.' },
+                    { name: 'Level 2', description: 'Improved capability description.' }
+                ]
+            },
+            processFlow: {
+                title: 'Transformation Journey',
+                steps: [
+                    { text: 'Define vision and success metrics.' },
+                    { text: 'Design operating model and capabilities.' },
+                    { text: 'Implement and iterate.' }
+                ]
+            }
+        };
+
+        const payload = presets[type];
+        if (!payload) {
+            console.warn('Unknown custom component', type);
+            return;
+        }
+
+        this.editor.blocks.insert(type, payload, undefined, undefined, true).then(() => {
+            this.queuePreviewUpdate();
+        }).catch((error) => {
+            console.error('Failed to insert custom component', error);
+        });
+    }
+
+    async initNavigationPanel() {
+        this.navTree = document.getElementById('nav-tree');
+        this.navForm = document.getElementById('nav-detail-form');
+        this.navAddButton = document.getElementById('nav-add-button');
+        this.navIdInput = document.getElementById('nav-item-id');
+        this.navLabelInput = document.getElementById('nav-label');
+        this.navSlugInput = document.getElementById('nav-slug');
+        this.navUrlInput = document.getElementById('nav-url');
+        this.navSectionInput = document.getElementById('nav-section');
+        this.navVisibleInput = document.getElementById('nav-visible');
+        this.navExternalInput = document.getElementById('nav-external');
+
+        if (!this.navTree || !this.navAddButton || !this.navForm) {
+            return;
+        }
+
+        await this.loadNavigationItems();
+        this.renderNavigationTree();
+
+        this.navAddButton.addEventListener('click', () => {
+            this.showNavForm();
+        });
+
+        this.navForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await this.saveNavItem();
+        });
+
+        const cancelButton = this.navForm.querySelector('[data-action="cancel"]');
+        if (cancelButton) {
+            cancelButton.addEventListener('click', () => {
+                this.navForm.classList.add('hidden');
+                this.currentNavSelection = null;
+                this.renderNavigationTree();
+            });
+        }
+
+        this.navTree.addEventListener('click', (event) => {
+            const action = event.target.dataset.action;
+            if (!action) return;
+            const node = event.target.closest('.nav-node');
+            if (!node) return;
+            const index = Number(node.dataset.index);
+            const item = this.navigationItems[index];
+            if (!item) return;
+
+            if (action === 'edit') {
+                this.showNavForm(item);
+            } else if (action === 'delete') {
+                this.deleteNavItem(item);
+            }
+        });
+    }
+
+    async loadNavigationItems() {
+        try {
+            const response = await fetch('/api/navigation');
+            if (!response.ok) {
+                throw new Error('Failed to load navigation');
+            }
+            this.navigationItems = await response.json();
+        } catch (error) {
+            console.error('Failed to load navigation', error);
+            this.navigationItems = [];
+        }
+    }
+
+    renderNavigationTree() {
+        if (!this.navTree) return;
+
+        if (!this.navigationItems.length) {
+            this.navTree.innerHTML = '<div class="nav-empty">Add links to populate your header navigation.</div>';
+            return;
+        }
+
+        this.navTree.innerHTML = this.navigationItems.map((item, index) => `
+            <div class="nav-node ${item.id === this.currentNavSelection ? 'active' : ''}" data-id="${item.id}" data-index="${index}" draggable="true">
+                <div class="nav-node-label">${item.label}</div>
+                <div class="nav-node-actions">
+                    <button type="button" data-action="edit">Edit</button>
+                    <button type="button" data-action="delete">Delete</button>
+                </div>
+            </div>
+        `).join('');
+
+        this.attachNavDragEvents();
+    }
+
+    attachNavDragEvents() {
+        const nodes = this.navTree.querySelectorAll('.nav-node');
+        nodes.forEach((node) => {
+            node.addEventListener('dragstart', (event) => {
+                this.dragIndex = Number(event.currentTarget.dataset.index);
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', String(this.dragIndex));
+                event.currentTarget.classList.add('dragging');
+            });
+            node.addEventListener('dragend', (event) => {
+                event.currentTarget.classList.remove('dragging');
+                this.dragIndex = null;
+            });
+            node.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+            node.addEventListener('drop', (event) => {
+                event.preventDefault();
+                const targetIndex = Number(event.currentTarget.dataset.index);
+                if (this.dragIndex === null || targetIndex === this.dragIndex) {
+                    return;
+                }
+                this.reorderNavigation(this.dragIndex, targetIndex);
+            });
+        });
+    }
+
+    showNavForm(item = null) {
+        if (!this.navForm) return;
+        this.navForm.classList.remove('hidden');
+        if (item) {
+            this.currentNavSelection = item.id;
+            this.navIdInput.value = item.id;
+            this.navLabelInput.value = item.label || '';
+            this.navSlugInput.value = item.slug || '';
+            this.navUrlInput.value = item.url || '';
+            this.navSectionInput.value = item.section || '';
+            this.navVisibleInput.checked = item.is_visible !== false;
+            this.navExternalInput.checked = !!item.is_external;
+        } else {
+            this.currentNavSelection = null;
+            this.navIdInput.value = '';
+            this.navLabelInput.value = '';
+            this.navSlugInput.value = '';
+            this.navUrlInput.value = '';
+            this.navSectionInput.value = '';
+            this.navVisibleInput.checked = true;
+            this.navExternalInput.checked = false;
+        }
+        this.renderNavigationTree();
+        if (this.navLabelInput) {
+            this.navLabelInput.focus();
+        }
+    }
+
+    async saveNavItem() {
+        const payload = {
+            label: this.navLabelInput.value.trim(),
+            slug: this.navSlugInput.value.trim(),
+            url: this.navUrlInput.value.trim(),
+            section: this.navSectionInput.value.trim(),
+            is_visible: this.navVisibleInput.checked,
+            is_external: this.navExternalInput.checked
+        };
+
+        if (!payload.slug) payload.slug = null;
+        if (!payload.url) payload.url = null;
+        if (!payload.section) payload.section = null;
+
+        if (!payload.label) {
+            showNotification('Label is required', 'error');
+            return;
+        }
+
+        const id = this.navIdInput.value;
+        const endpoint = id ? `/api/navigation/${id}` : '/api/navigation';
+        const method = id ? 'PUT' : 'POST';
+
+        try {
+            const response = await fetch(endpoint, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                throw new Error('Failed to save navigation item');
+            }
+            await this.loadNavigationItems();
+            this.navForm.classList.add('hidden');
+            this.currentNavSelection = null;
+            this.renderNavigationTree();
+            showNotification('Navigation updated', 'success');
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to save navigation item', 'error');
+        }
+    }
+
+    async deleteNavItem(item) {
+        if (!item || !confirm('Delete this navigation item?')) {
+            return;
+        }
+        try {
+            const response = await fetch(`/api/navigation/${item.id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                throw new Error('Failed to delete navigation item');
+            }
+            await this.loadNavigationItems();
+            if (this.navForm) {
+                this.navForm.classList.add('hidden');
+            }
+            this.currentNavSelection = null;
+            this.renderNavigationTree();
+            showNotification('Navigation item removed', 'success');
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to delete navigation item', 'error');
+        }
+    }
+
+    async reorderNavigation(fromIndex, toIndex) {
+        if (fromIndex === toIndex) {
+            return;
+        }
+        const items = this.navigationItems.slice();
+        const [moved] = items.splice(fromIndex, 1);
+        items.splice(toIndex, 0, moved);
+        this.navigationItems = items.map((item, index) => ({ ...item, position: index }));
+
+        try {
+            await Promise.all(this.navigationItems.map((item) => {
+                return fetch(`/api/navigation/${item.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ position: item.position })
+                }).then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update position');
+                    }
+                });
+            }));
+            await this.loadNavigationItems();
+            this.renderNavigationTree();
+        } catch (error) {
+            console.error('Failed to reorder navigation', error);
+            showNotification('Failed to reorder navigation', 'error');
+        }
+    }
+
     async loadArticle() {
         try {
             const response = await fetch(`/api/articles/${this.articleId}`);
@@ -327,6 +857,30 @@ class ArticleEditor {
             if (article.content && article.content_type === 'editorjs') {
                 await this.editor.render(article.content);
             }
+
+            const sectionInput = document.getElementById('article-section');
+            const subsectionInput = document.getElementById('article-subsection');
+            const featuredInput = document.getElementById('article-featured-order');
+            const chapterSlugInput = document.getElementById('article-chapter-slug');
+            const chapterOrderInput = document.getElementById('article-chapter-order');
+
+            if (sectionInput) {
+                sectionInput.value = article.section || 'blog';
+            }
+            if (subsectionInput) {
+                subsectionInput.value = article.subsection || '';
+            }
+            if (featuredInput) {
+                featuredInput.value = article.featured_order !== null && article.featured_order !== undefined ? article.featured_order : '';
+            }
+            if (chapterSlugInput) {
+                chapterSlugInput.value = article.chapter_slug || '';
+            }
+            if (chapterOrderInput) {
+                chapterOrderInput.value = article.chapter_order !== null && article.chapter_order !== undefined ? article.chapter_order : '';
+            }
+
+            this.toggleSectionFields();
 
             this.updatePreviewMeta(article);
             this.queuePreviewUpdate();
@@ -341,6 +895,14 @@ class ArticleEditor {
             this.toggleAutosaveIndicator(true);
             const outputData = await this.editor.save();
 
+            const sectionValue = document.getElementById('article-section').value || 'blog';
+            const subsectionValue = document.getElementById('article-subsection').value;
+            const featuredRaw = document.getElementById('article-featured-order').value;
+            const chapterSlugValue = document.getElementById('article-chapter-slug').value;
+            const chapterOrderRaw = document.getElementById('article-chapter-order').value;
+            const featuredOrder = parseInt(featuredRaw, 10);
+            const chapterOrder = parseInt(chapterOrderRaw, 10);
+
             const articleData = {
                 title: document.getElementById('article-title').value,
                 subtitle: document.getElementById('article-subtitle').value,
@@ -350,6 +912,11 @@ class ArticleEditor {
                 excerpt: document.getElementById('article-excerpt').value,
                 meta_description: document.getElementById('article-meta-description').value,
                 status: status === 'auto' ? document.getElementById('article-status').value : status,
+                section: sectionValue,
+                subsection: subsectionValue || null,
+                featured_order: Number.isNaN(featuredOrder) ? null : featuredOrder,
+                chapter_slug: chapterSlugValue || null,
+                chapter_order: Number.isNaN(chapterOrder) ? null : chapterOrder,
                 content_type: 'editorjs',
                 content: outputData
             };
@@ -370,6 +937,29 @@ class ArticleEditor {
                 this.articleId = savedArticle.id;
                 history.pushState({}, '', `/admin/articles/${savedArticle.id}`);
             }
+
+            const sectionSelect = document.getElementById('article-section');
+            const subsectionInput = document.getElementById('article-subsection');
+            const featuredInput = document.getElementById('article-featured-order');
+            const chapterSlugInput = document.getElementById('article-chapter-slug');
+            const chapterOrderInput = document.getElementById('article-chapter-order');
+
+            if (sectionSelect) {
+                sectionSelect.value = savedArticle.section || sectionSelect.value;
+            }
+            if (subsectionInput) {
+                subsectionInput.value = savedArticle.subsection || '';
+            }
+            if (featuredInput) {
+                featuredInput.value = savedArticle.featured_order !== null && savedArticle.featured_order !== undefined ? savedArticle.featured_order : '';
+            }
+            if (chapterSlugInput) {
+                chapterSlugInput.value = savedArticle.chapter_slug || '';
+            }
+            if (chapterOrderInput) {
+                chapterOrderInput.value = savedArticle.chapter_order !== null && savedArticle.chapter_order !== undefined ? savedArticle.chapter_order : '';
+            }
+            this.toggleSectionFields();
 
             document.getElementById('article-status').value = savedArticle.status;
             this.updateStatusLabel(savedArticle.status);
@@ -407,13 +997,33 @@ class ArticleEditor {
         previewStatus.textContent = pretty;
     }
 
+    formatSection(section) {
+        const mapping = {
+            blog: 'Articles',
+            tom_method: 'The TOM Method',
+            portfolio: 'Portfolio',
+            home: 'Homepage'
+        };
+        if (!section) {
+            return mapping.blog;
+        }
+        if (mapping[section]) {
+            return mapping[section];
+        }
+        return section
+            .split('_')
+            .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+            .join(' ');
+    }
+
     updatePreviewMeta(article = null) {
         const data = article || {
             title: document.getElementById('article-title').value,
             subtitle: document.getElementById('article-subtitle').value,
             author: document.getElementById('article-author').value,
             reading_time: document.getElementById('article-reading-time').value,
-            status: document.getElementById('article-status').value
+            status: document.getElementById('article-status').value,
+            section: document.getElementById('article-section').value
         };
 
         document.getElementById('preview-title').textContent = data.title || 'Start writing to see the preview…';
@@ -421,6 +1031,10 @@ class ArticleEditor {
         document.getElementById('preview-meta-author').textContent = data.author || 'Author';
         document.getElementById('preview-meta-reading').textContent = data.reading_time || 'Reading time';
         document.getElementById('preview-meta-status').textContent = data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1) : 'Draft';
+        const previewSection = document.getElementById('preview-meta-section');
+        if (previewSection) {
+            previewSection.textContent = this.formatSection(data.section);
+        }
     }
 
     queuePreviewUpdate() {
@@ -462,10 +1076,10 @@ class ArticleEditor {
                     return `<hr class="my-12 border-border-subtle">`;
                 case 'table':
                     const rows = (data.content || []).map((row, index) => {
-                        const cells = (row || []).map(cell => `<${index === 0 && data.withHeadings ? 'th' : 'td'} class="border border-border-subtle px-4 py-2">${cell}</${index === 0 && data.withHeadings ? 'th' : 'td'}>`).join('');
+                        const cells = (row || []).map(cell => `<${index === 0 && data.withHeadings ? 'th' : 'td'}>${cell}</${index === 0 && data.withHeadings ? 'th' : 'td'}>`).join('');
                         return `<tr>${cells}</tr>`;
                     }).join('');
-                    return `<div class="overflow-x-auto my-8"><table class="min-w-full border border-border-subtle text-sm">${rows}</table></div>`;
+                    return `<div class="overflow-x-auto my-8"><table>${rows}</table></div>`;
                 default:
                     return '';
             }

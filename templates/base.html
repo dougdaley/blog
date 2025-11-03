@@ -37,10 +37,20 @@
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border-subtle">
         <nav class="max-w-4xl mx-auto px-8 py-6">
             <div class="flex justify-center gap-12">
-                <a href="/" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'home' %}text-text-primary font-medium{% endif %}">Home</a>
-                <a href="/blog" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'blog' %}text-text-primary font-medium{% endif %}">Articles</a>
-                <a href="/tom-method" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'tom_method' or request.endpoint == 'tom_method_article' %}text-text-primary font-medium{% endif %}">The TOM Method</a>
-                <a href="/portfolio" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.endpoint == 'portfolio' %}text-text-primary font-medium{% endif %}">Portfolio</a>
+                {% if navigation_items %}
+                    {% for item in navigation_items %}
+                        {% set href = item.url %}
+                        {% set is_home = item.active_pattern == '/' %}
+                        {% set is_active = (is_home and request.path == '/') or (not is_home and item.active_pattern and request.path.startswith(item.active_pattern)) %}
+                        <a href="{{ href }}"
+                           class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if is_active %}text-text-primary font-medium{% endif %}"
+                           {% if item.is_external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                            {{ item.label }}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <a href="/" class="text-text-muted hover:text-text-primary transition-colors font-sans text-base tracking-wider {% if request.path == '/' %}text-text-primary font-medium{% endif %}">Home</a>
+                {% endif %}
             </div>
         </nav>
     </header>

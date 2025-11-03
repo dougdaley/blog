@@ -52,13 +52,13 @@
 <body class="font-serif text-lg leading-relaxed text-text-primary bg-paper antialiased">
     <!-- Admin Navigation -->
     <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border-subtle">
-        <nav class="max-w-5xl mx-auto px-8 py-6 flex items-center justify-between">
+        <nav class="mx-auto px-8 py-6 flex items-center justify-between">
             <div>
                 <a href="/admin" class="font-sans tracking-[0.3em] text-xs uppercase text-text-muted hover:text-text-primary transition-colors">Content Studio</a>
             </div>
             <div class="flex items-center gap-10 font-sans text-sm tracking-wide">
                 <a href="/admin/articles" class="nav-link-lite {% if request.endpoint == 'admin_articles' or request.endpoint == 'admin_new_article' or request.endpoint == 'admin_edit_article' %}active{% endif %}">Articles</a>
-                <a href="/admin/business" class="nav-link-lite {% if request.endpoint and request.endpoint.startswith('admin_business') %}active{% endif %}">Business Docs</a>
+                <a href="/admin/navigation" class="nav-link-lite {% if request.endpoint == 'admin_navigation' %}active{% endif %}">Navigation</a>
                 <a href="/" class="nav-link-lite flex items-center gap-2">
                     <span class="text-lg">←</span> <span>Back to site</span>
                 </a>

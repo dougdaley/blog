@@ -1,0 +1,300 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Navigation{% endblock %}
+
+{% block content %}
+<div class="admin-shell space-y-12">
+    <header class="space-y-4">
+        <span class="floating-badge">Site Navigation</span>
+        <h1 class="page-title-input text-4xl">Top Navigation</h1>
+        <p class="page-subtitle-input text-base text-text-muted">Control the links that appear across the site header. Order updates apply instantly.</p>
+    </header>
+
+    <section class="notion-surface overflow-hidden">
+        <div class="editor-preview">
+            <div class="preview-heading">Current Links</div>
+            <div id="navigation-container" class="mt-8 space-y-6">
+                <div class="text-text-light text-sm font-sans tracking-[0.28em] uppercase text-center py-12 bg-cream rounded-2xl border border-border-subtle">
+                    Loading navigation…
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="notion-surface overflow-hidden">
+        <div class="editor-preview">
+            <div class="preview-heading">Add Link</div>
+            <form id="new-navigation-form" class="mt-8 grid gap-6 md:grid-cols-2">
+                <label class="meta-card">
+                    <span>Label</span>
+                    <input type="text" name="label" placeholder="Navigation label" required>
+                </label>
+                <label class="meta-card">
+                    <span>Slug (optional)</span>
+                    <input type="text" name="slug" placeholder="identifier">
+                </label>
+                <label class="meta-card">
+                    <span>URL (external or custom)</span>
+                    <input type="url" name="url" placeholder="https://example.com">
+                </label>
+                <label class="meta-card">
+                    <span>Section (internal routing)</span>
+                    <select name="section">
+                        <option value="">None</option>
+                        <option value="home">Home</option>
+                        <option value="blog">Articles</option>
+                        <option value="tom_method">The TOM Method</option>
+                        <option value="portfolio">Portfolio</option>
+                    </select>
+                </label>
+                <label class="meta-card flex items-center gap-3">
+                    <input type="checkbox" name="is_external" class="w-4 h-4">
+                    <span>Open in new tab</span>
+                </label>
+                <label class="meta-card flex items-center gap-3">
+                    <input type="checkbox" name="is_visible" class="w-4 h-4" checked>
+                    <span>Visible</span>
+                </label>
+                <div class="md:col-span-2 flex justify-end">
+                    <button type="submit" class="rounded-full border border-text-primary/20 bg-text-primary text-white px-6 py-3 font-sans text-xs tracking-[0.3em] uppercase hover:bg-text-primary/90 transition-colors">
+                        Add Navigation Item
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const INITIAL_NAV_ITEMS = {{ items_json|tojson }};
+
+class NavigationManager {
+    constructor() {
+        this.container = document.getElementById('navigation-container');
+        this.form = document.getElementById('new-navigation-form');
+        this.items = INITIAL_NAV_ITEMS || [];
+
+        this.init();
+    }
+
+    async init() {
+        await this.loadNavigation();
+        this.render();
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        this.form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(this.form);
+            const payload = Object.fromEntries(formData.entries());
+            payload.is_external = formData.get('is_external') === 'on';
+            payload.is_visible = formData.get('is_visible') !== 'on' ? false : true;
+
+            try {
+                const response = await fetch('/api/navigation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('Failed to create navigation item');
+                const item = await response.json();
+                this.items.push(item);
+                this.form.reset();
+                await this.loadNavigation();
+                this.render();
+                showNotification('Navigation item created', 'success');
+            } catch (error) {
+                console.error(error);
+                showNotification('Failed to create navigation item', 'error');
+            }
+        });
+
+        this.container.addEventListener('click', async (event) => {
+            const action = event.target.dataset.action;
+            if (!action) return;
+
+            const card = event.target.closest('[data-id]');
+            const itemId = card ? card.dataset.id : null;
+
+            if (action === 'save' && itemId) {
+                await this.saveItem(card, itemId);
+            }
+
+            if (action === 'delete' && itemId) {
+                await this.deleteItem(itemId);
+            }
+
+            if ((action === 'move-up' || action === 'move-down') && itemId) {
+                await this.reorderItem(itemId, action === 'move-up' ? -1 : 1);
+            }
+        });
+    }
+
+    async loadNavigation() {
+        try {
+            const response = await fetch('/api/navigation');
+            if (!response.ok) throw new Error('Failed to load navigation');
+            this.items = await response.json();
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to load navigation', 'error');
+            this.items = [];
+        }
+    }
+
+    createInput(label, value, field, type = 'text') {
+        return `
+            <label class="meta-card">
+                <span>${label}</span>
+                <input type="${type}" value="${value ?? ''}" data-field="${field}">
+            </label>
+        `;
+    }
+
+    render() {
+        if (!this.items.length) {
+            this.container.innerHTML = `
+                <div class="text-center text-text-muted py-12 border border-border-subtle rounded-2xl bg-cream">
+                    <p class="font-sans text-xs uppercase tracking-[0.28em] mb-3">No navigation items</p>
+                    <p>Add your first entry to populate the header.</p>
+                </div>
+            `;
+            return;
+        }
+
+        this.container.innerHTML = this.items.map((item, index) => `
+            <div class="notion-surface border border-border-subtle rounded-2xl p-6" data-id="${item.id}">
+                <div class="flex flex-col lg:flex-row lg:items-start gap-6">
+                    <div class="flex-1 grid gap-4 md:grid-cols-2">
+                        ${this.createInput('Label', item.label, 'label')}
+                        ${this.createInput('Slug', item.slug, 'slug')}
+                        ${this.createInput('URL', item.url, 'url')}
+                        <label class="meta-card">
+                            <span>Section</span>
+                            <select data-field="section">
+                                <option value="" ${item.section ? '' : 'selected'}>None</option>
+                                <option value="home" ${item.section === 'home' ? 'selected' : ''}>Home</option>
+                                <option value="blog" ${item.section === 'blog' ? 'selected' : ''}>Articles</option>
+                                <option value="tom_method" ${item.section === 'tom_method' ? 'selected' : ''}>The TOM Method</option>
+                                <option value="portfolio" ${item.section === 'portfolio' ? 'selected' : ''}>Portfolio</option>
+                            </select>
+                        </label>
+                        ${this.createInput('Position', item.position ?? index, 'position', 'number')}
+                    </div>
+                    <div class="meta-card flex flex-col gap-4 max-w-xs">
+                        <label class="flex items-center gap-3">
+                            <input type="checkbox" data-field="is_visible" class="w-4 h-4" ${item.is_visible ? 'checked' : ''}>
+                            <span>Visible</span>
+                        </label>
+                        <label class="flex items-center gap-3">
+                            <input type="checkbox" data-field="is_external" class="w-4 h-4" ${item.is_external ? 'checked' : ''}>
+                            <span>Open in new tab</span>
+                        </label>
+                        <div class="flex gap-2 mt-2">
+                            <button data-action="move-up" class="rounded-full border border-border-subtle px-3 py-2 text-xs uppercase tracking-[0.25em] text-text-secondary hover:text-text-primary transition-colors" ${index === 0 ? 'disabled' : ''}>Up</button>
+                            <button data-action="move-down" class="rounded-full border border-border-subtle px-3 py-2 text-xs uppercase tracking-[0.25em] text-text-secondary hover:text-text-primary transition-colors" ${index === this.items.length - 1 ? 'disabled' : ''}>Down</button>
+                        </div>
+                        <div class="flex gap-2 mt-auto">
+                            <button data-action="save" class="flex-1 rounded-full border border-text-primary/20 bg-text-primary text-white px-4 py-2 text-xs uppercase tracking-[0.28em] hover:bg-text-primary/90 transition-colors">Save</button>
+                            <button data-action="delete" class="flex-1 rounded-full border border-red-200 text-red-500 px-4 py-2 text-xs uppercase tracking-[0.28em] hover:bg-red-500/10 transition-colors">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    collectData(card) {
+        const inputs = card.querySelectorAll('[data-field]');
+        const data = {};
+        inputs.forEach((input) => {
+            const field = input.dataset.field;
+            if (input.type === 'checkbox') {
+                data[field] = input.checked;
+            } else if (input.tagName.toLowerCase() === 'select') {
+                data[field] = input.value || null;
+            } else if (input.type === 'number') {
+                const parsed = parseInt(input.value, 10);
+                data[field] = Number.isNaN(parsed) ? null : parsed;
+            } else {
+                data[field] = input.value;
+            }
+        });
+        return data;
+    }
+
+    async saveItem(card, itemId) {
+        const payload = this.collectData(card);
+        try {
+            const response = await fetch(`/api/navigation/${itemId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error('Failed to update navigation item');
+            showNotification('Navigation updated', 'success');
+            await this.loadNavigation();
+            this.render();
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to update navigation', 'error');
+        }
+    }
+
+    async deleteItem(itemId) {
+        if (!confirm('Delete this navigation item?')) return;
+        try {
+            const response = await fetch(`/api/navigation/${itemId}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Failed to delete navigation item');
+            showNotification('Navigation item removed', 'success');
+            await this.loadNavigation();
+            this.render();
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to delete navigation', 'error');
+        }
+    }
+
+    async reorderItem(itemId, delta) {
+        const index = this.items.findIndex((item) => String(item.id) === String(itemId));
+        if (index === -1) return;
+
+        const swapIndex = index + delta;
+        if (swapIndex < 0 || swapIndex >= this.items.length) return;
+
+        // Swap positions locally
+        const temp = this.items[index];
+        this.items[index] = this.items[swapIndex];
+        this.items[swapIndex] = temp;
+
+        // Normalize positions before persisting
+        this.items.forEach((item, idx) => {
+            item.position = idx;
+        });
+
+        try {
+            await Promise.all(this.items.map((item) =>
+                fetch(`/api/navigation/${item.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ position: item.position })
+                })
+            ));
+            showNotification('Navigation reordered', 'success');
+            await this.loadNavigation();
+            this.render();
+        } catch (error) {
+            console.error(error);
+            showNotification('Failed to reorder navigation', 'error');
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    new NavigationManager();
+});
+</script>
+{% endblock %}
